@@ -1,4 +1,4 @@
-package com.example.demo.model.response;
+package com.example.demo.common.model.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

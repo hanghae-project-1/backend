@@ -1,6 +1,6 @@
-package com.example.demo.exception;
+package com.example.demo.common.exception;
 
-import com.example.demo.model.response.Response;
+import com.example.demo.common.model.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.rmi.ServerException;
 import java.util.Objects;
 
 @RequiredArgsConstructor

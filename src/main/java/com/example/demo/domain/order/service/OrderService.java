@@ -1,6 +1,6 @@
-package com.example.demo.order.service;
+package com.example.demo.domain.order.service;
 
-import com.example.demo.order.repository.OrderRepository;
+import com.example.demo.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

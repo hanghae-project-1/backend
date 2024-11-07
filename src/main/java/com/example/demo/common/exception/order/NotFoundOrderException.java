@@ -1,7 +1,7 @@
-package com.example.demo.exception.order;
+package com.example.demo.common.exception.order;
 
-import com.example.demo.exception.Error;
-import com.example.demo.exception.OrderException;
+import com.example.demo.common.exception.Error;
+import com.example.demo.common.exception.OrderException;
 import org.springframework.http.HttpStatus;
 
 public class NotFoundOrderException extends OrderException {
