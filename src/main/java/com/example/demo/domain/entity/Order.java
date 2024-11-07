@@ -1,6 +1,6 @@
-package com.example.domain.entity;
+package com.example.demo.domain.entity;
 
-import com.example.domain.entity.common.Status;
+import com.example.demo.domain.entity.common.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "P_Order")
+@Table(name = "p_order")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
 

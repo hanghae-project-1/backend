@@ -1,4 +1,4 @@
-package com.example.domain.entity;
+package com.example.demo.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,6 +1,6 @@
-package com.example.domain.entity.user;
+package com.example.demo.domain.entity.user;
 
-import com.example.domain.entity.common.CommonConstant;
+import com.example.demo.domain.entity.common.CommonConstant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "P_User")
+@Table(name = "p_user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User implements UserDetails {
 

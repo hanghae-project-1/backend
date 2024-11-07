@@ -1,4 +1,4 @@
-package com.example.domain.entity.common;
+package com.example.demo.domain.entity.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;

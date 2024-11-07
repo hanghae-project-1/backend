@@ -1,5 +1,6 @@
-package com.example.domain.entity;
+package com.example.demo.domain.entity;
 
+import com.example.demo.domain.entity.common.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -12,26 +13,27 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "p_order_detail")
+@Table(name = "p_payment")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDetail {
+public class Payment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	UUID id;
 
 	@NotNull
-	Integer price;
+	String approvalNumber;
 
 	@NotNull
-	Integer quantity;
+	String merchantNumber;
 
-	@ManyToOne
-	@JoinColumn(name = "order_id")
-	Order order;
+	@NotNull
+	String pgProvider;
 
-	@OneToOne
-	@JoinColumn(name = "menu_id")
-	Menu menu;
+	@NotNull
+	Integer paymentPrice;
 
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	Status.Payment status;
 }

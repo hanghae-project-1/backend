@@ -1,7 +1,7 @@
-package com.example.domain.entity;
+package com.example.demo.domain.entity;
 
-import com.example.domain.entity.common.BaseEntity;
-import com.example.domain.entity.common.Status;
+import com.example.demo.domain.entity.common.BaseEntity;
+import com.example.demo.domain.entity.common.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "P_Menu")
+@Table(name = "p_menu")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Menu extends BaseEntity {
 
