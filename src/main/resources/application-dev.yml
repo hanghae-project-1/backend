@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: hikari-pool
+      maximum-pool-size: 4
+      data-source-properties:
+        idleTimeout: 600000
+        maxLifetime: 1800000
+        minimumIdle: 5
+      connection-test-query: select 1
+      auto-commit: true
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
+        show-sql: true
+        format_sql: true
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
+  config:
+    import: classpath:application-key.yml
+
+#jwt:
+#  secret:
+#    key: ${JWT_SECRET_KEY}
