@@ -1,5 +1,6 @@
 package com.example.demo.common.exception;
 
+import com.example.demo.domain.order.exception.OrderException;
 import com.example.demo.common.model.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
