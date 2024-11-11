@@ -1,5 +1,6 @@
 package com.example.demo.domain.entity.user;
 
+import com.example.demo.domain.entity.common.BaseEntity;
 import com.example.demo.domain.entity.common.CommonConstant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "p_user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)

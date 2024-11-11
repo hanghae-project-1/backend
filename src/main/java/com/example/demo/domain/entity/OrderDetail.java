@@ -1,5 +1,6 @@
 package com.example.demo.domain.entity;
 
+import com.example.demo.domain.entity.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "p_order_detail")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDetail {
+public class OrderDetail extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
