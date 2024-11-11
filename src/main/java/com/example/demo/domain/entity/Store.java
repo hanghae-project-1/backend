@@ -1,5 +1,6 @@
 package com.example.demo.domain.entity;
 
+import com.example.demo.domain.entity.common.BaseEntity;
 import com.example.demo.domain.entity.common.CommonConstant;
 import com.example.demo.domain.entity.common.Status;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "p_store")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Store {
+public class Store extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
