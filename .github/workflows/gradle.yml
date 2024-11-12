@@ -1,0 +1,59 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13 
+        env:
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB }}
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      # gradle 실행 허가
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Bulid Test
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 
+        with:
+          arguments: build
+
+      # PR conversation & Action에 몇 개의 테스트 중에 몇 개가 통과 되었는지
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            **/build/test-results/**/*.xml
+
+      # 테스트 파일 내에서 어디에서 테스트가 실패되었는지 가르쳐 줌.
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() 
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
