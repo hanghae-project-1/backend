@@ -1,7 +1,9 @@
 package com.example.demo.domain.order.service;
 
 import com.example.demo.domain.entity.Order;
+import com.example.demo.domain.entity.OrderDetail;
 import com.example.demo.domain.entity.common.Status;
+import com.example.demo.domain.order.mapper.OrderMapper;
 import com.example.demo.domain.order.model.request.OrderDetailRequestDTO;
 import com.example.demo.domain.order.model.request.OrderRequestDTO;
 import com.example.demo.domain.order.repository.OrderRepository;
@@ -18,8 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class OrderServiceTest {
 
@@ -50,6 +51,26 @@ class OrderServiceTest {
 					"ORDER_COMPLETED",
 					List.of(new OrderDetailRequestDTO(UUID.randomUUID(), 5000, 2))
 			);
+
+			Order order = Order.builder()
+					.totalPrice(requestDTO.totalPrice())
+					.destinationAddr(requestDTO.destinationAddr())
+					.orderRequest(requestDTO.orderRequest())
+					.isTakeOut(requestDTO.isTakeOut())
+					.status(Status.Order.valueOf(requestDTO.status()))
+					.build();
+
+			List<OrderDetail> orderDetails = requestDTO.orderDetailRequestDTOList().stream().map(dto ->
+					OrderMapper.toOrderDetailEntity(order, dto)
+			).toList();
+
+			order.addOrderDetail(orderDetails);
+
+			when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
+				Order savedOrder = invocation.getArgument(0);
+				savedOrder.addOrderDetail(orderDetails);
+				return savedOrder;
+			});
 
 			// When
 			orderService.createOrder(requestDTO);
