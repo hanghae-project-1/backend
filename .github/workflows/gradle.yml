@@ -45,8 +45,6 @@ jobs:
           POSTGRES_DB: ${{ secrets.DB }}
         run: |
           psql -h localhost -U postgres -c "CREATE DATABASE ${{ env.POSTGRES_DB }};"
-          psql -h localhost -U postgres -c "CREATE USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}';"
-          psql -h localhost -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE ${{ env.POSTGRES_DB }} TO ${{ env.POSTGRES_USER }};"
 
       # Bulid Test
       - name: Build with Gradle
