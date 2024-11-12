@@ -27,6 +27,7 @@ public enum Error {
 	NOT_FOUND_ORDER(5000, "해당 주문을 찾을 수 없습니다."),
 	RETURN_PERIOD_PASSED(5001, "주문을 취소할 수 없습니다."),
 	ORDER_BEEN_CANCELED(5002, "주문이 취소되었습니다."),
+	INCORRECT_TOTAL_PRICE(5200, "총 금액이 맞지않습니다."),
 
 
 	INTERNAL_SERVER_ERROR(9999, "서버 오류입니다.");

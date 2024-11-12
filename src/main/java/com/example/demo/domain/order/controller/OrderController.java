@@ -7,10 +7,9 @@ import com.example.demo.domain.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +26,17 @@ public class OrderController implements OrderControllerDocs {
 		return Response.<Void>builder()
 				.code(HttpStatus.CREATED.value())
 				.message(HttpStatus.CREATED.getReasonPhrase())
+				.build();
+	}
+
+	@PatchMapping("/{orderId}")
+	public Response<Void> modifyOrderStatus(@PathVariable UUID orderId) {
+
+		orderService.modifyOrderStatus(orderId);
+		
+		return Response.<Void>builder()
+				.code(HttpStatus.OK.value())
+				.message(HttpStatus.OK.getReasonPhrase())
 				.build();
 	}
 }

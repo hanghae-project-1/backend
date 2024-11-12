@@ -13,7 +13,7 @@ import static com.example.demo.domain.entity.common.Status.Order.ORDER_PROGRESS;
 @Component
 public class OrderMapper {
 
-	public static OrderDetail toOrderDetailEntity(Order order, OrderDetailRequestDTO requestDTO) {
+	public OrderDetail toOrderDetailEntity(Order order, OrderDetailRequestDTO requestDTO) {
 
 		return OrderDetail.builder()
 				.price(requestDTO.price())
@@ -23,7 +23,7 @@ public class OrderMapper {
 				.build();
 	}
 
-	public static Order toOrderEntity(OrderRequestDTO requestDTO) {
+	public Order toOrderEntity(OrderRequestDTO requestDTO) {
 
 		return Order.builder()
 				.totalPrice(requestDTO.totalPrice())
