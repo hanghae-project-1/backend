@@ -39,6 +39,10 @@ jobs:
 
       # Bulid Test
       - name: Build with Gradle
+        env:
+          SPRING_DATASOURCE_URL: ${{ secrets.DB }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
         uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 
         with:
           arguments: build
