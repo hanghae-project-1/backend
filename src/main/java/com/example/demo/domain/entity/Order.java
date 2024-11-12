@@ -2,12 +2,14 @@ package com.example.demo.domain.entity;
 
 import com.example.demo.domain.entity.common.BaseEntity;
 import com.example.demo.domain.entity.common.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -40,5 +42,13 @@ public class Order extends BaseEntity {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	Status.Order status;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	List<OrderDetail> orderDetailList;
+
+	public void addOrderDetail(List<OrderDetail> orderDetailList) {
+		this.orderDetailList = orderDetailList;
+	}
 
 }
