@@ -37,16 +37,6 @@ jobs:
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
-      # Bulid Test
-      - name: Build with Gradle
-        env:
-          SPRING_DATASOURCE_URL: ${{ secrets.DB }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 
-        with:
-          arguments: build
-
       # Create Database
       - name: Create database and user
         env:
@@ -58,6 +48,15 @@ jobs:
           psql -h localhost -U postgres -c "CREATE USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}';"
           psql -h localhost -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE ${{ env.POSTGRES_DB }} TO ${{ env.POSTGRES_USER }};"
 
+      # Bulid Test
+      - name: Build with Gradle
+        env:
+          SPRING_DATASOURCE_URL: ${{ secrets.DB }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 
+        with:
+          arguments: build
 
       # PR conversation & Action에 몇 개의 테스트 중에 몇 개가 통과 되었는지
       - name: Publish Test Results
