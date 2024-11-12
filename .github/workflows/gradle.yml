@@ -44,7 +44,12 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
           POSTGRES_DB: ${{ secrets.DB }}
         run: |
-          psql -h localhost -U postgres -c "CREATE DATABASE ${{ env.POSTGRES_DB }};"
+          psql -h localhost:5432 -U postgres -c "CREATE DATABASE ${{ env.POSTGRES_DB }};"
+          psql -h localhost:5432 -U postgres -c "CREATE USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}';"
+          psql -h localhost:5432 -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE ${{ env.POSTGRES_DB }} TO ${{ env.POSTGRES_USER }};"
+          psql -h localhost:5432 -U postgres -d ${{ env.POSTGRES_DB }} -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${{ env.POSTGRES_USER }};"
+          psql -h localhost:5432 -U postgres -d ${{ env.POSTGRES_DB }} -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${{ env.POSTGRES_USER }};"
+
 
       # Bulid Test
       - name: Build with Gradle
