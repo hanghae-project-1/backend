@@ -43,12 +43,20 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	Status.Order status;
 
+	@ManyToOne
+	@JoinColumn(name = "store_id")
+	Store store;
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<OrderDetail> orderDetailList;
 
 	public void addOrderDetail(List<OrderDetail> orderDetailList) {
 		this.orderDetailList = orderDetailList;
+	}
+
+	public void updateStatus(Status.Order status) {
+		this.status = status;
 	}
 
 }

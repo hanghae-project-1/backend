@@ -1,14 +1,20 @@
 package com.example.demo.domain.order.controller;
 
 import com.example.demo.common.model.response.Response;
+import com.example.demo.domain.entity.user.User;
 import com.example.demo.domain.order.controller.docs.OrderControllerDocs;
 import com.example.demo.domain.order.model.request.OrderRequestDTO;
+import com.example.demo.domain.order.model.response.OrderResponseDTO;
+import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import com.example.demo.domain.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,13 +36,38 @@ public class OrderController implements OrderControllerDocs {
 	}
 
 	@PatchMapping("/{orderId}")
-	public Response<Void> modifyOrderStatus(@PathVariable UUID orderId) {
+	public Response<Void> modifyOrderStatus(@PathVariable UUID orderId, @RequestParam Boolean isCancel) {
 
-		orderService.modifyOrderStatus(orderId);
-		
+		orderService.modifyOrderStatus(orderId, isCancel);
+
 		return Response.<Void>builder()
-				.code(HttpStatus.OK.value())
-				.message(HttpStatus.OK.getReasonPhrase())
+				.build();
+	}
+
+	@GetMapping("/{orderId}")
+	public Response<OrderResponseDTO> getOrderDetails(@PathVariable UUID orderId, @AuthenticationPrincipal User user) {
+
+		return Response.<OrderResponseDTO>builder()
+				.data(orderService.getOrderDetails(orderId, user.getId()))
+				.build();
+	}
+
+	@GetMapping("/user")
+	public Response<List<OrderResponseDTO>> getAllOrdersByCustomer(@AuthenticationPrincipal User user) {
+
+		return Response.<List<OrderResponseDTO>>builder()
+				.data(orderService.getAllOrdersByCustomer(user.getId()))
+				.build();
+	}
+
+	@GetMapping("/store/{storeId}")
+	public Response<StoreOrderResponseDTO> getAllOrdersByStore(@PathVariable UUID storeId,
+	                                                           @RequestBody LocalDateTime startDate,
+	                                                           @RequestBody LocalDateTime endDate,
+	                                                           @AuthenticationPrincipal User user) {
+
+		return Response.<StoreOrderResponseDTO>builder()
+				.data(orderService.getAllOrdersByStore(storeId, startDate, endDate, user.getId()))
 				.build();
 	}
 }
