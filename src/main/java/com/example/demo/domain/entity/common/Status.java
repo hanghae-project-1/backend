@@ -41,20 +41,4 @@ public class Status {
 		private final String description;
 	}
 
-	@Getter
-	@AllArgsConstructor
-	public enum Category {
-
-		CHINESE("중식"),
-		KOREAN("한식"),
-		WESTERN("양식"),
-		JAPANESE("일식"),
-		FAST_FOOD("패스트푸드"),
-		DESSERT("디저트"),
-		DRINK("음료수"),
-		ETC("기타");
-
-		private final String description;
-	}
-
 }

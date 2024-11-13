@@ -34,8 +34,4 @@ public class Store extends BaseEntity {
 	@NotNull
 	String address;
 
-	@NotNull
-	@Enumerated(EnumType.STRING)
-	Status.Category category;
-
 }

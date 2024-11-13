@@ -17,6 +17,8 @@ import lombok.Getter;
  * 6 : Order Detail Service
  * 7 : Review Service
  * 8 : Payment Service
+ * 9 : CategoryMenu Service
+ * 10 : Region Service
  * ... (추가)
  */
 
@@ -30,6 +32,7 @@ public enum Error {
 	IS_NOT_YOUR_ORDER(5003, "사용자의 주문이 아닙니다."),
 	INCORRECT_TOTAL_PRICE(5100, "총 금액이 맞지않습니다."),
 
+	DUPLICATE_CATEGORYMENU_NAME(9000, "중복된 카테고리 이름입니다."),
 
 	INTERNAL_SERVER_ERROR(9999, "서버 오류입니다.");
 
