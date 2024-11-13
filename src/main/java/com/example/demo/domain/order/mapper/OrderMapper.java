@@ -5,7 +5,13 @@ import com.example.demo.domain.entity.Order;
 import com.example.demo.domain.entity.OrderDetail;
 import com.example.demo.domain.order.model.request.OrderDetailRequestDTO;
 import com.example.demo.domain.order.model.request.OrderRequestDTO;
+import com.example.demo.domain.order.model.response.BaseOrderDTO;
+import com.example.demo.domain.order.model.response.OrderDetailResponseDTO;
+import com.example.demo.domain.order.model.response.OrderResponseDTO;
+import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static com.example.demo.domain.entity.common.Status.Order.ORDER_COMPLETED;
 import static com.example.demo.domain.entity.common.Status.Order.ORDER_PROGRESS;
@@ -34,4 +40,40 @@ public class OrderMapper {
 				.build();
 	}
 
+	public OrderResponseDTO toOrderResponseDTO(Order order) {
+
+		return new OrderResponseDTO(
+				new BaseOrderDTO(
+						order.getId(),
+						order.getTotalPrice(),
+						order.getIsTakeOut(),
+						order.getStatus().name()
+				),
+				order.getDestinationAddr(),
+				order.getOrderRequest(),
+				order.getOrderDetailList().stream().map(orderDetail ->
+						new OrderDetailResponseDTO(
+								orderDetail.getMenu().getName(),
+								orderDetail.getPrice(),
+								orderDetail.getQuantity()
+						)
+				).toList()
+		);
+	}
+
+	public StoreOrderResponseDTO toStoreOrderResponseDTO(List<Order> orderList) {
+
+		return new StoreOrderResponseDTO(
+				orderList.size(),
+				orderList.stream().mapToInt(Order::getTotalPrice).sum(),
+				orderList.stream().map(order ->
+						new BaseOrderDTO(
+								order.getId(),
+								order.getTotalPrice(),
+								order.getIsTakeOut(),
+								order.getStatus().name()
+						)
+				).toList()
+		);
+	}
 }
