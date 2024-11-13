@@ -2,7 +2,7 @@ package com.example.demo.domain.category.controller.docs;
 
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.category.dto.request.CategoryMenuRequestDto;
-import com.example.demo.domain.order.model.request.OrderRequestDTO;
+import com.example.demo.domain.category.dto.response.CategoryMenuResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Tag(name = "CategoryMenu", description = "카테고리 생성, 조회, 수정 등의 사용자 API")
 public interface CategoryMenuControllerDocs {
@@ -24,4 +27,10 @@ public interface CategoryMenuControllerDocs {
     @PostMapping("/api/v1/category-menu")
     Response<Void> createCategoryMenu(@Valid @RequestBody CategoryMenuRequestDto requestDto);
 
+    @Operation(summary = "카테고리 전체 조회", description = "카테고리 전체를 조회하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "카테고리 전체 조회 성공", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping("/api/v1/category-menu")
+    Response<List<CategoryMenuResponseDto>> getAllCategoryMenu();
 }
