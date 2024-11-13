@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +39,13 @@ public class CategoryMenuController implements CategoryMenuControllerDocs {
                 .build();
     }
 
+    @PatchMapping("/{categoryMenuId}")
+    public Response<Void> modifyCategoryMenu(@PathVariable UUID categoryMenuId, @RequestBody CategoryMenuRequestDto requestDto){
+
+        categoryMenuService.modifyCategoryMenu(categoryMenuId, requestDto);
+
+        return Response.<Void>builder()
+                .build();
+    }
 
 }

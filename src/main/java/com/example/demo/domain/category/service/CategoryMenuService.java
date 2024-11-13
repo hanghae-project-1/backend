@@ -4,6 +4,7 @@ import com.example.demo.domain.category.dto.request.CategoryMenuRequestDto;
 import com.example.demo.domain.category.dto.response.CategoryMenuResponseDto;
 import com.example.demo.domain.category.entity.CategoryMenu;
 import com.example.demo.domain.category.exception.DuplicateCategoryMenuException;
+import com.example.demo.domain.category.exception.NotFoundCategoryMenuException;
 import com.example.demo.domain.category.mapper.CategoryMenuMapper;
 import com.example.demo.domain.category.repository.CategoryMenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +26,7 @@ public class CategoryMenuService {
 
         CategoryMenu categoryMenu = categoryMenuMapper.toCategoryMenuEntity(requestDto);
 
-        boolean exists = categoryMenuRepository.existsByName(requestDto.name());
-        if(exists){
-            throw new DuplicateCategoryMenuException();
-        }
+        checkForDuplicateName(requestDto);
 
         categoryMenuRepository.save(categoryMenu);
 
@@ -40,5 +39,22 @@ public class CategoryMenuService {
 
         return categoryMenuList.stream().map(categoryMenuMapper::toCategoryMenuResponseDto).toList();
 
+    }
+
+    @Transactional
+    public void modifyCategoryMenu(UUID categoryMenuId, CategoryMenuRequestDto requestDto) {
+        CategoryMenu categoryMenu = categoryMenuRepository.findById(categoryMenuId).orElseThrow(NotFoundCategoryMenuException::new);
+
+        checkForDuplicateName(requestDto);
+
+        categoryMenu.updateCategoryMenu(requestDto);
+        categoryMenuRepository.save(categoryMenu);
+    }
+
+    private void checkForDuplicateName(CategoryMenuRequestDto requestDto) {
+        boolean exists = categoryMenuRepository.existsByName(requestDto.name());
+        if(exists){
+            throw new DuplicateCategoryMenuException();
+        }
     }
 }

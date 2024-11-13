@@ -12,9 +12,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "CategoryMenu", description = "카테고리 생성, 조회, 수정 등의 사용자 API")
 public interface CategoryMenuControllerDocs {
@@ -33,4 +36,13 @@ public interface CategoryMenuControllerDocs {
     })
     @GetMapping("/api/v1/category-menu")
     Response<List<CategoryMenuResponseDto>> getAllCategoryMenu();
+
+    @Operation(summary = "카테고리 수정", description = "카테고리 ID 를 통해 카테고리를 수정하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "카테고리 수정 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "카테고리 수정 실패", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "카테고리를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PatchMapping("/api/v1/category-menu/{categoryMenuId}")
+    Response<Void> modifyCategoryMenu(@PathVariable UUID categoryMenuId, @RequestBody CategoryMenuRequestDto requestDto);
 }
