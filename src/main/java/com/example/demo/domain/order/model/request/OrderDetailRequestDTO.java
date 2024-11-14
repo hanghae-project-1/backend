@@ -1,6 +1,7 @@
 package com.example.demo.domain.order.model.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
@@ -9,10 +10,10 @@ public record OrderDetailRequestDTO(
 		@NotBlank
 		UUID menuId,
 
-		@NotBlank
+		@NotNull
 		Integer price,
 
-		@NotBlank
+		@NotNull
 		Integer quantity
 
 ) {

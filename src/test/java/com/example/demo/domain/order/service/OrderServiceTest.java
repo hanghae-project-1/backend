@@ -215,7 +215,6 @@ class OrderServiceTest {
 			OrderDetail orderDetail = new OrderDetail();
 			Menu menu = new Menu();
 
-			// Reflection을 사용하여 private 필드 설정
 			ReflectionTestUtils.setField(order, "id", id);
 			ReflectionTestUtils.setField(order, "createdBy", userId);
 			ReflectionTestUtils.setField(menu, "id", menuId);

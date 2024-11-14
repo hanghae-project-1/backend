@@ -4,14 +4,18 @@ import com.example.demo.domain.entity.common.Status;
 import com.example.demo.domain.order.exception.IsNotYourOrderException;
 import com.example.demo.domain.order.exception.NotFoundOrderException;
 import com.example.demo.domain.order.repository.OrderRepository;
+import com.example.demo.domain.review.entity.Review;
 import com.example.demo.domain.review.exception.IsNotYourReviewException;
 import com.example.demo.domain.review.exception.NotFoundReviewException;
 import com.example.demo.domain.review.exception.PurchaseIsNotConfirmedException;
 import com.example.demo.domain.review.mapper.ReviewMapper;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
+import com.example.demo.domain.review.model.response.UserReviewResponseDTO;
 import com.example.demo.domain.review.repository.ReviewRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +62,17 @@ public class ReviewService {
 			throw new NotFoundReviewException();
 		});
 
+	}
+
+	@Transactional(readOnly = true)
+	public UserReviewResponseDTO getReviewList(UUID userId, Pageable pageable) {
+
+		Page<Review> userReviewList = reviewRepository.findAllByCreatedBy(userId, pageable);
+
+		return new UserReviewResponseDTO(
+				userReviewList.getNumberOfElements(),
+				userReviewList.getContent().stream().map(reviewMapper::toReviewResponseDTO).toList()
+		);
 	}
 
 	private void validateReviewByUser(UUID reviewId, UUID userId) {
