@@ -1,8 +1,8 @@
 package com.example.demo.domain.order.mapper;
 
 import com.example.demo.domain.entity.Menu;
-import com.example.demo.domain.entity.Order;
-import com.example.demo.domain.entity.OrderDetail;
+import com.example.demo.domain.order.entity.Order;
+import com.example.demo.domain.order.entity.OrderDetail;
 import com.example.demo.domain.order.model.request.OrderDetailRequestDTO;
 import com.example.demo.domain.order.model.request.OrderRequestDTO;
 import com.example.demo.domain.order.model.response.BaseOrderDTO;

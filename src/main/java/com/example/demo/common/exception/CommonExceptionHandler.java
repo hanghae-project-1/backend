@@ -1,7 +1,8 @@
 package com.example.demo.common.exception;
 
-import com.example.demo.domain.order.exception.OrderException;
 import com.example.demo.common.model.response.Response;
+import com.example.demo.domain.order.exception.OrderException;
+import com.example.demo.domain.review.exception.ReviewException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -16,9 +17,21 @@ import java.util.Objects;
 @RestControllerAdvice(basePackages = {"com.example.demo"})
 public class CommonExceptionHandler {
 
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(ReviewException.class)
+	public Response<Void> ReviewExceptionHandler(ReviewException e) {
+
+		Error error = e.getError();
+
+		return Response.<Void>builder()
+				.code(error.getCode())
+				.message(error.getMessage())
+				.build();
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(OrderException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public Response<Void> ServerExceptionHandler(OrderException e) {
+	public Response<Void> OrderExceptionHandler(OrderException e) {
 
 		Error error = e.getError();
 

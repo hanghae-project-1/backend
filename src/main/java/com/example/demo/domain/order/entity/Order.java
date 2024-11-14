@@ -1,5 +1,6 @@
-package com.example.demo.domain.entity;
+package com.example.demo.domain.order.entity;
 
+import com.example.demo.domain.entity.Store;
 import com.example.demo.domain.entity.common.BaseEntity;
 import com.example.demo.domain.entity.common.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "p_order")
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order extends BaseEntity {
 
