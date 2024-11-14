@@ -1,5 +1,6 @@
-package com.example.demo.domain.entity;
+package com.example.demo.domain.order.entity;
 
+import com.example.demo.domain.entity.Menu;
 import com.example.demo.domain.entity.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -13,25 +14,26 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "p_review")
+@Table(name = "p_order_detail")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Review extends BaseEntity {
+public class OrderDetail extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	UUID id;
 
 	@NotNull
-	String content;
+	Integer price;
 
 	@NotNull
-	Integer rating;
+	Integer quantity;
 
-	@NotNull
-	String imageUrl;
-
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "order_id")
 	Order order;
+
+	@OneToOne
+	@JoinColumn(name = "menu_id")
+	Menu menu;
 
 }

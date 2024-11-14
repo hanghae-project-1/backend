@@ -1,10 +1,10 @@
 package com.example.demo.domain.order.service;
 
 import com.example.demo.domain.entity.Menu;
-import com.example.demo.domain.entity.Order;
-import com.example.demo.domain.entity.OrderDetail;
 import com.example.demo.domain.entity.Store;
 import com.example.demo.domain.entity.common.Status;
+import com.example.demo.domain.order.entity.Order;
+import com.example.demo.domain.order.entity.OrderDetail;
 import com.example.demo.domain.order.exception.IncorrectTotalPriceException;
 import com.example.demo.domain.order.exception.IsNotYourOrderException;
 import com.example.demo.domain.order.exception.ReturnPeriodPassedException;

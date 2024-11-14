@@ -1,9 +1,9 @@
 package com.example.demo.domain.order.repository;
 
 import com.example.demo.domain.entity.Menu;
-import com.example.demo.domain.entity.Order;
-import com.example.demo.domain.entity.OrderDetail;
 import com.example.demo.domain.entity.common.Status;
+import com.example.demo.domain.order.entity.Order;
+import com.example.demo.domain.order.entity.OrderDetail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

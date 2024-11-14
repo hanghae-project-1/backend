@@ -32,6 +32,10 @@ public enum Error {
 	IS_NOT_YOUR_ORDER(5003, "사용자의 주문이 아닙니다."),
 	INCORRECT_TOTAL_PRICE(5100, "총 금액이 맞지않습니다."),
 
+	NOT_FOUND_REVIEW(7000, "해당 리뷰를 찾을 수 없습니다."),
+	PURCHASE_IS_NOT_CONFIRMED(7100, "리뷰는 구매 확정 후 작성할 수 있습니다."),
+	IS_NOT_YOUR_REVIEW(7101, "본인의 주문에만 리뷰를 작성할 수 있습니다."),
+	
 	DUPLICATE_CATEGORYMENU_NAME(9000, "중복된 카테고리 이름입니다."),
 	NOT_FOUND_CATEGORYMENU(9001, "해당 카테고리를 찾을 수 없습니다."),
 
