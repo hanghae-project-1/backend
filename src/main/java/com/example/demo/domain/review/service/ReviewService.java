@@ -10,7 +10,7 @@ import com.example.demo.domain.review.exception.NotFoundReviewException;
 import com.example.demo.domain.review.exception.PurchaseIsNotConfirmedException;
 import com.example.demo.domain.review.mapper.ReviewMapper;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
-import com.example.demo.domain.review.model.response.UserReviewResponseDTO;
+import com.example.demo.domain.review.model.response.ReviewListResponseDTO;
 import com.example.demo.domain.review.repository.ReviewRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -65,13 +65,24 @@ public class ReviewService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserReviewResponseDTO getReviewList(UUID userId, Pageable pageable) {
+	public ReviewListResponseDTO getUserReviewList(UUID userId, Pageable pageable) {
 
 		Page<Review> userReviewList = reviewRepository.findAllByCreatedBy(userId, pageable);
 
-		return new UserReviewResponseDTO(
+		return new ReviewListResponseDTO(
 				userReviewList.getNumberOfElements(),
 				userReviewList.getContent().stream().map(reviewMapper::toReviewResponseDTO).toList()
+		);
+	}
+
+	@Transactional(readOnly = true)
+	public ReviewListResponseDTO getStoreReviewList(UUID storeId, Pageable pageable) {
+
+		Page<Review> storeReviewList = reviewRepository.findAllByIsDeleteTrueAndIsPublicFalseAndOrderStoreId(storeId, pageable);
+
+		return new ReviewListResponseDTO(
+				storeReviewList.getNumberOfElements(),
+				storeReviewList.getContent().stream().map(reviewMapper::toReviewResponseDTO).toList()
 		);
 	}
 
@@ -92,5 +103,4 @@ public class ReviewService {
 			throw new IsNotYourOrderException();
 		}
 	}
-
 }

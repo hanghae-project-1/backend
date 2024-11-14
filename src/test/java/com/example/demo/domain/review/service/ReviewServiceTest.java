@@ -1,5 +1,6 @@
 package com.example.demo.domain.review.service;
 
+import com.example.demo.domain.entity.Store;
 import com.example.demo.domain.order.entity.Order;
 import com.example.demo.domain.order.exception.IsNotYourOrderException;
 import com.example.demo.domain.order.repository.OrderRepository;
@@ -285,24 +286,33 @@ class ReviewServiceTest {
 
 		private List<Review> createMockReviewList(UUID userId) {
 
+			Store store = new Store();
+			ReflectionTestUtils.setField(store, "id", UUID.randomUUID());
+
+			Order order = new Order();
+			ReflectionTestUtils.setField(order, "id", UUID.randomUUID());
+			ReflectionTestUtils.setField(order, "store", store);
+
 			Review review1 = new Review();
 			ReflectionTestUtils.setField(review1, "id", UUID.randomUUID());
 			ReflectionTestUtils.setField(review1, "content", "Great product!");
 			ReflectionTestUtils.setField(review1, "rating", 5);
 			ReflectionTestUtils.setField(review1, "createdBy", userId);
+			ReflectionTestUtils.setField(review1, "order", order);
 
 			Review review2 = new Review();
 			ReflectionTestUtils.setField(review2, "id", UUID.randomUUID());
 			ReflectionTestUtils.setField(review2, "content", "Not bad.");
 			ReflectionTestUtils.setField(review2, "rating", 3);
 			ReflectionTestUtils.setField(review2, "createdBy", userId);
+			ReflectionTestUtils.setField(review2, "order", order);
 
 			return List.of(review1, review2);
 		}
 
 		@Test
 		@DisplayName("사용자 ID로 작성한 리뷰 목록 조회 성공")
-		void getReviewList_SUCCESS() {
+		void getUserReviewList_SUCCESS() {
 
 			// Given
 			UUID userId = UUID.randomUUID();
@@ -313,10 +323,30 @@ class ReviewServiceTest {
 			when(reviewRepository.findAllByCreatedBy(userId, pageable)).thenReturn(emptyPage);
 
 			// When
-			reviewService.getReviewList(userId, pageable);
+			reviewService.getUserReviewList(userId, pageable);
 
 			// Then
 			verify(reviewRepository, times(1)).findAllByCreatedBy(userId, pageable);
+		}
+
+		@Test
+		@DisplayName("가게 ID로 작성된 리뷰 목록 조회 성공")
+		void getStoreReviewList_SUCCESS() {
+
+			// Given
+			UUID storeId = UUID.randomUUID();
+
+			Pageable pageable = PageRequest.of(0, 10);
+
+			Page<Review> emptyPage = new PageImpl<>(createMockReviewList(UUID.randomUUID()), pageable, 2);
+
+			when(reviewRepository.findAllByIsDeleteTrueAndIsPublicFalseAndOrderStoreId(storeId, pageable)).thenReturn(emptyPage);
+
+			// When
+			reviewService.getStoreReviewList(storeId, pageable);
+
+			// Then
+			verify(reviewRepository, times(1)).findAllByIsDeleteTrueAndIsPublicFalseAndOrderStoreId(storeId, pageable);
 		}
 	}
 }
