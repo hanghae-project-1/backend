@@ -1,6 +1,7 @@
 package com.example.demo.domain.region.entity;
 
 import com.example.demo.domain.entity.common.CommonConstant;
+import com.example.demo.domain.region.dto.request.RegionRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -27,4 +28,7 @@ public class Region {
     @Pattern(regexp = CommonConstant.RegExp.DISTRICT)
     String district;
 
+    public void updateRegion(RegionRequestDto requestDto) {
+        this.district = requestDto.district();
+    }
 }

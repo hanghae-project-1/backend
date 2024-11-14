@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,4 +37,12 @@ public class RegionController {
                 .build();
     }
 
+    @PatchMapping("/{regionId}")
+    public Response<Void> modifyRegion(@PathVariable UUID regionId, @RequestBody RegionRequestDto requestDto){
+
+        regionService.modifyRegion(regionId, requestDto);
+
+        return Response.<Void>builder()
+                .build();
+    }
 }
