@@ -1,8 +1,11 @@
 package com.example.demo.domain.review.service;
 
+import com.example.demo.domain.entity.common.Status;
+import com.example.demo.domain.order.exception.IsNotYourOrderException;
 import com.example.demo.domain.order.exception.NotFoundOrderException;
 import com.example.demo.domain.order.repository.OrderRepository;
 import com.example.demo.domain.review.exception.IsNotYourReviewException;
+import com.example.demo.domain.review.exception.NotFoundReviewException;
 import com.example.demo.domain.review.exception.PurchaseIsNotConfirmedException;
 import com.example.demo.domain.review.mapper.ReviewMapper;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
@@ -29,13 +32,8 @@ public class ReviewService {
 
 		orderRepository.findById(request.orderId()).ifPresentOrElse(order -> {
 
-					if (!order.getCreatedBy().equals(userId)) {
-						throw new IsNotYourReviewException();
-					}
-
-					if (!order.getStatus().equals(ORDER_COMPLETED)) {
-						throw new PurchaseIsNotConfirmedException();
-					}
+					validateOrderByUser(order.getCreatedBy(), userId);
+					validateOrderStatus(order.getStatus());
 
 					reviewRepository.save(reviewMapper.toEntity(request));
 				}, () -> {
@@ -44,4 +42,40 @@ public class ReviewService {
 		);
 
 	}
+
+	@Transactional
+	public void modifyReviewStatus(UUID reviewId, UUID userId) {
+
+		reviewRepository.findById(reviewId).ifPresentOrElse(review -> {
+
+			validateOrderByUser(review.getOrder().getCreatedBy(), userId);
+			validateReviewByUser(review.getCreatedBy(), userId);
+
+			review.markAsDelete();
+
+			reviewRepository.save(review);
+		}, () -> {
+			throw new NotFoundReviewException();
+		});
+
+	}
+
+	private void validateReviewByUser(UUID reviewId, UUID userId) {
+		if (!reviewId.equals(userId)) {
+			throw new IsNotYourReviewException();
+		}
+	}
+
+	private void validateOrderStatus(Status.Order status) {
+		if (!status.equals(ORDER_COMPLETED)) {
+			throw new PurchaseIsNotConfirmedException();
+		}
+	}
+
+	private void validateOrderByUser(UUID orderId, UUID userId) {
+		if (!orderId.equals(userId)) {
+			throw new IsNotYourOrderException();
+		}
+	}
+
 }

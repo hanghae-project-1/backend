@@ -8,10 +8,9 @@ import com.example.demo.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +23,13 @@ public class ReviewController implements ReviewControllerDocs {
 	public Response<Void> createReview(@Valid @RequestBody ReviewRequestDTO request, @AuthenticationPrincipal User user) {
 
 		reviewService.createReview(request, user.getId());
+		return Response.<Void>builder()
+				.build();
+	}
+
+	@PatchMapping("/{reviewId}")
+	public Response<Void> modifyReviewStatus(@PathVariable UUID reviewId, @AuthenticationPrincipal User user) {
+		reviewService.modifyReviewStatus(reviewId, user.getId());
 		return Response.<Void>builder()
 				.build();
 	}
