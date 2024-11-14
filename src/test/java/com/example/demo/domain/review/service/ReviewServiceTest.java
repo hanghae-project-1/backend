@@ -1,0 +1,278 @@
+package com.example.demo.domain.review.service;
+
+import com.example.demo.domain.order.entity.Order;
+import com.example.demo.domain.order.exception.IsNotYourOrderException;
+import com.example.demo.domain.order.repository.OrderRepository;
+import com.example.demo.domain.review.entity.Review;
+import com.example.demo.domain.review.exception.IsNotYourReviewException;
+import com.example.demo.domain.review.exception.NotFoundReviewException;
+import com.example.demo.domain.review.exception.PurchaseIsNotConfirmedException;
+import com.example.demo.domain.review.mapper.ReviewMapper;
+import com.example.demo.domain.review.model.request.BaseReviewRequestDTO;
+import com.example.demo.domain.review.model.request.ReviewRequestDTO;
+import com.example.demo.domain.review.repository.ReviewRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.example.demo.domain.entity.common.Status.Order.ORDER_COMPLETED;
+import static com.example.demo.domain.entity.common.Status.Order.SHIPPING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class ReviewServiceTest {
+
+	@InjectMocks
+	private ReviewService reviewService;
+
+	@Mock
+	private ReviewRepository reviewRepository;
+
+	@Mock
+	private OrderRepository orderRepository;
+
+	@Mock
+	private ReviewMapper reviewMapper;
+
+	@Nested
+	@DisplayName("리뷰 생성 테스트")
+	class createReviewTest {
+
+		private Order createMockOrder(UUID orderId, UUID userId, LocalDateTime createdAt) {
+
+			Order order = new Order();
+			// Reflection을 사용하여 private 필드 설정
+			ReflectionTestUtils.setField(order, "id", orderId);
+			ReflectionTestUtils.setField(order, "createdAt", createdAt);
+			ReflectionTestUtils.setField(order, "createdBy", userId);
+			ReflectionTestUtils.setField(order, "status", ORDER_COMPLETED);
+
+			return order;
+		}
+
+		private Review createMockReview(UUID id, Order mockOrder) {
+
+			Review review = new Review();
+			ReflectionTestUtils.setField(review, "id", id);
+			ReflectionTestUtils.setField(review, "content", "content");
+			ReflectionTestUtils.setField(review, "rating", 4);
+			ReflectionTestUtils.setField(review, "order", mockOrder);
+			return review;
+		}
+
+		@Test
+		@DisplayName("리뷰 생성 성공")
+		void createReview_SUCCESS() {
+
+			// Given
+			UUID orderId = UUID.randomUUID();
+			UUID reviewId = UUID.randomUUID();
+			UUID userId = UUID.randomUUID();
+			Order mockOrder = createMockOrder(orderId, userId, LocalDateTime.now().minusMinutes(3));
+			Review mockReview = createMockReview(reviewId, mockOrder);
+
+			ReviewRequestDTO request = new ReviewRequestDTO(
+					orderId,
+					new BaseReviewRequestDTO(
+							"content",
+							4
+					)
+			);
+
+			when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+			when(reviewMapper.toEntity(request)).thenReturn(mockReview);
+			when(reviewRepository.save(any(Review.class))).thenReturn(mockReview);
+
+			// When
+			reviewService.createReview(request, userId);
+
+			// Then
+			ArgumentCaptor<Review> reviewArgumentCaptor = ArgumentCaptor.forClass(Review.class);
+			verify(reviewRepository, times(1)).save(reviewArgumentCaptor.capture());
+			Review review = reviewArgumentCaptor.getValue();
+
+			assertThat(review.getOrder().getId()).isEqualTo(orderId);
+			assertThat(review.getContent()).isEqualTo("content");
+			assertThat(review.getRating()).isEqualTo(4);
+			assertThat(review.getOrder().getCreatedBy()).isEqualTo(userId);
+		}
+
+		@Test
+		@DisplayName("리뷰 생성 실패 _ 내 주문이 아님")
+		void createReview_FAIL_IS_NOT_YOUR_ORDER() {
+
+			// Given
+			UUID orderId = UUID.randomUUID();
+			UUID userId = UUID.randomUUID();
+			Order mockOrder = createMockOrder(orderId, userId, LocalDateTime.now().minusMinutes(3));
+
+			ReviewRequestDTO request = new ReviewRequestDTO(
+					orderId,
+					new BaseReviewRequestDTO(
+							"content",
+							4
+					)
+			);
+
+			when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+
+			// When & Then
+			assertThrows(
+					IsNotYourOrderException.class,
+					() -> reviewService.createReview(request, UUID.randomUUID())
+			);
+
+		}
+
+		@Test
+		@DisplayName("리뷰 생성 실패 _ 구매 확정이 아님")
+		void createReview_FAIL_PURCHASE_IS_NOT_CONFIRMED() {
+
+			// Given
+			UUID orderId = UUID.randomUUID();
+			UUID userId = UUID.randomUUID();
+			Order mockOrder = createMockOrder(orderId, userId, LocalDateTime.now().minusMinutes(3));
+
+			ReflectionTestUtils.setField(mockOrder, "status", SHIPPING);
+
+			ReviewRequestDTO request = new ReviewRequestDTO(
+					orderId,
+					new BaseReviewRequestDTO(
+							"content",
+							4
+					)
+			);
+
+			when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+
+			// When & Then
+			assertThrows(
+					PurchaseIsNotConfirmedException.class,
+					() -> reviewService.createReview(request, userId)
+			);
+
+		}
+
+	}
+
+	@Nested
+	@DisplayName("리뷰 수정 테스트")
+	class modifyReviewStatusTest {
+
+		private Order createMockOrder(UUID orderId, UUID userId, LocalDateTime createdAt) {
+
+			Order order = new Order();
+			// Reflection을 사용하여 private 필드 설정
+			ReflectionTestUtils.setField(order, "id", orderId);
+			ReflectionTestUtils.setField(order, "createdAt", createdAt);
+			ReflectionTestUtils.setField(order, "createdBy", userId);
+			ReflectionTestUtils.setField(order, "status", ORDER_COMPLETED);
+
+			return order;
+		}
+
+		private Review createMockReview(UUID reviewId, UUID userId, UUID orderId) {
+
+			Review review = new Review();
+			ReflectionTestUtils.setField(review, "id", reviewId);
+			ReflectionTestUtils.setField(review, "content", "content");
+			ReflectionTestUtils.setField(review, "rating", 4);
+			ReflectionTestUtils.setField(review, "createdBy", userId);
+			ReflectionTestUtils.setField(review, "order", createMockOrder(orderId, userId, LocalDateTime.now().minusMinutes(3)));
+			return review;
+		}
+
+		@Test
+		@DisplayName("리뷰 상태값 변경 성공")
+		void modifyReviewStatus_SUCCESS() {
+
+			// Given
+			UUID reviewId = UUID.randomUUID();
+			UUID userId = UUID.randomUUID();
+			UUID orderId = UUID.randomUUID();
+			Review mockReview = createMockReview(reviewId, userId, orderId);
+
+			when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+			when(reviewRepository.save(any(Review.class))).thenReturn(mockReview);
+
+			// When
+			reviewService.modifyReviewStatus(reviewId, userId);
+
+			// Then
+			assertTrue(mockReview.getIsDelete());
+			assertFalse(mockReview.getIsPublic());
+			assertNotNull(mockReview.getDeletedAt());
+			verify(reviewRepository).save(mockReview);
+		}
+
+		@Test
+		@DisplayName("리뷰 상태값 변경 실패 _ 내 주문이 아님")
+		void modifyReviewStatus_FAIL_IS_NOT_YOUR_ORDER() {
+
+			// Given
+			UUID reviewId = UUID.randomUUID();
+			UUID userId = UUID.randomUUID();
+			UUID orderId = UUID.randomUUID();
+			Review mockReview = createMockReview(reviewId, userId, orderId);
+
+			when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+
+			// When & Then
+			assertThrows(
+					IsNotYourOrderException.class,
+					() -> reviewService.modifyReviewStatus(reviewId, UUID.randomUUID())
+			);
+		}
+
+		@Test
+		@DisplayName("리뷰 상태값 변경 실패 _ 내 리뷰가 아님")
+		void modifyReviewStatus_FAIL_IS_NOT_YOUR_REVIEW() {
+
+			// Given
+			UUID reviewId = UUID.randomUUID();
+			UUID userId = UUID.randomUUID();
+			UUID orderId = UUID.randomUUID();
+			Review mockReview = createMockReview(reviewId, userId, orderId);
+
+			ReflectionTestUtils.setField(mockReview, "createdBy", UUID.randomUUID());
+
+			when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+
+			// When & Then
+			assertThrows(
+					IsNotYourReviewException.class,
+					() -> reviewService.modifyReviewStatus(reviewId, userId)
+			);
+		}
+
+		@Test
+		@DisplayName("리뷰 상태값 변경 실패 _ 리뷰를 찾을 수 없음")
+		void modifyReviewStatus_FAIL_NOT_FOUND_REVIEW() {
+
+			// Given
+			UUID reviewId = UUID.randomUUID();
+			UUID userId = UUID.randomUUID();
+
+			when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
+
+			// When & Then
+			assertThrows(
+					NotFoundReviewException.class,
+					() -> reviewService.modifyReviewStatus(reviewId, userId)
+			);
+		}
+	}
+}
