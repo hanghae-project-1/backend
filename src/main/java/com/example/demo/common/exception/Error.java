@@ -33,6 +33,7 @@ public enum Error {
 	INCORRECT_TOTAL_PRICE(5100, "총 금액이 맞지않습니다."),
 
 	DUPLICATE_CATEGORYMENU_NAME(9000, "중복된 카테고리 이름입니다."),
+	NOT_FOUND_CATEGORYMENU(9001, "해당 카테고리를 찾을 수 없습니다."),
 
 	INTERNAL_SERVER_ERROR(9999, "서버 오류입니다.");
 

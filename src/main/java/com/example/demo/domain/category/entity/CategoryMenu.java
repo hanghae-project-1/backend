@@ -1,5 +1,6 @@
 package com.example.demo.domain.category.entity;
 
+import com.example.demo.domain.category.dto.request.CategoryMenuRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,6 +22,10 @@ public class CategoryMenu {
     UUID id;
 
     @NotNull
+    @Column(unique = true)
     String name;
 
+    public void updateCategoryMenu(CategoryMenuRequestDto requestDto) {
+        this.name = requestDto.name();
+    }
 }
