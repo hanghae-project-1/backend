@@ -3,6 +3,7 @@ package com.example.demo.domain.review.controller.docs;
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.entity.user.User;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
+import com.example.demo.domain.review.model.response.ReviewListResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,5 +46,21 @@ public interface ReviewControllerDocs {
 	})
 	@PatchMapping("/api/v1/review/{reviewId}")
 	Response<Void> modifyReviewStatus(@PathVariable UUID reviewId, @AuthenticationPrincipal User user);
+
+	@Operation(summary = "사용자 리뷰 조회", description = "사용자 ID 를 통해 작성한 리뷰를 조회하는 API 입니다.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "리뷰 조회 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+			@ApiResponse(responseCode = "404", description = "리뷰를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
+	})
+	@GetMapping("/api/v1/review/user/{userId}")
+	Response<ReviewListResponseDTO> getUserReviewList(@PathVariable UUID userId, Pageable pageable);
+
+	@Operation(summary = "가게 리뷰 조회", description = "가게 ID 를 통해 작성된 리뷰를 조회하는 API 입니다.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "리뷰 조회 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+			@ApiResponse(responseCode = "404", description = "리뷰를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
+	})
+	@GetMapping("/api/v1/review/store/{storeId}")
+	Response<ReviewListResponseDTO> getStoreReviewList(@PathVariable UUID storeId, Pageable pageable);
 
 }

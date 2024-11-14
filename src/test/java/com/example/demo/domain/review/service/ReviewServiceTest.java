@@ -1,5 +1,6 @@
 package com.example.demo.domain.review.service;
 
+import com.example.demo.domain.entity.Store;
 import com.example.demo.domain.order.entity.Order;
 import com.example.demo.domain.order.exception.IsNotYourOrderException;
 import com.example.demo.domain.order.repository.OrderRepository;
@@ -19,9 +20,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,7 +60,6 @@ class ReviewServiceTest {
 		private Order createMockOrder(UUID orderId, UUID userId, LocalDateTime createdAt) {
 
 			Order order = new Order();
-			// Reflection을 사용하여 private 필드 설정
 			ReflectionTestUtils.setField(order, "id", orderId);
 			ReflectionTestUtils.setField(order, "createdAt", createdAt);
 			ReflectionTestUtils.setField(order, "createdBy", userId);
@@ -175,7 +180,6 @@ class ReviewServiceTest {
 		private Order createMockOrder(UUID orderId, UUID userId, LocalDateTime createdAt) {
 
 			Order order = new Order();
-			// Reflection을 사용하여 private 필드 설정
 			ReflectionTestUtils.setField(order, "id", orderId);
 			ReflectionTestUtils.setField(order, "createdAt", createdAt);
 			ReflectionTestUtils.setField(order, "createdBy", userId);
@@ -273,6 +277,76 @@ class ReviewServiceTest {
 					NotFoundReviewException.class,
 					() -> reviewService.modifyReviewStatus(reviewId, userId)
 			);
+		}
+	}
+
+	@Nested
+	@DisplayName("리뷰 목록 조회 테스트")
+	class getReview {
+
+		private List<Review> createMockReviewList(UUID userId) {
+
+			Store store = new Store();
+			ReflectionTestUtils.setField(store, "id", UUID.randomUUID());
+
+			Order order = new Order();
+			ReflectionTestUtils.setField(order, "id", UUID.randomUUID());
+			ReflectionTestUtils.setField(order, "store", store);
+
+			Review review1 = new Review();
+			ReflectionTestUtils.setField(review1, "id", UUID.randomUUID());
+			ReflectionTestUtils.setField(review1, "content", "Great product!");
+			ReflectionTestUtils.setField(review1, "rating", 5);
+			ReflectionTestUtils.setField(review1, "createdBy", userId);
+			ReflectionTestUtils.setField(review1, "order", order);
+
+			Review review2 = new Review();
+			ReflectionTestUtils.setField(review2, "id", UUID.randomUUID());
+			ReflectionTestUtils.setField(review2, "content", "Not bad.");
+			ReflectionTestUtils.setField(review2, "rating", 3);
+			ReflectionTestUtils.setField(review2, "createdBy", userId);
+			ReflectionTestUtils.setField(review2, "order", order);
+
+			return List.of(review1, review2);
+		}
+
+		@Test
+		@DisplayName("사용자 ID로 작성한 리뷰 목록 조회 성공")
+		void getUserReviewList_SUCCESS() {
+
+			// Given
+			UUID userId = UUID.randomUUID();
+
+			Pageable pageable = PageRequest.of(0, 10);
+			Page<Review> emptyPage = new PageImpl<>(createMockReviewList(userId), pageable, 2);
+
+			when(reviewRepository.findAllByCreatedBy(userId, pageable)).thenReturn(emptyPage);
+
+			// When
+			reviewService.getUserReviewList(userId, pageable);
+
+			// Then
+			verify(reviewRepository, times(1)).findAllByCreatedBy(userId, pageable);
+		}
+
+		@Test
+		@DisplayName("가게 ID로 작성된 리뷰 목록 조회 성공")
+		void getStoreReviewList_SUCCESS() {
+
+			// Given
+			UUID storeId = UUID.randomUUID();
+
+			Pageable pageable = PageRequest.of(0, 10);
+
+			Page<Review> emptyPage = new PageImpl<>(createMockReviewList(UUID.randomUUID()), pageable, 2);
+
+			when(reviewRepository.findAllByIsDeleteTrueAndIsPublicFalseAndOrderStoreId(storeId, pageable)).thenReturn(emptyPage);
+
+			// When
+			reviewService.getStoreReviewList(storeId, pageable);
+
+			// Then
+			verify(reviewRepository, times(1)).findAllByIsDeleteTrueAndIsPublicFalseAndOrderStoreId(storeId, pageable);
 		}
 	}
 }

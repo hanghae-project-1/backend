@@ -1,12 +1,13 @@
 package com.example.demo.domain.order.model.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public record OrderRequestDTO(
 
-		@NotBlank(message = "총 가격을 입력해주세요.")
+		@NotNull(message = "총 가격을 입력해주세요.")
 		Integer totalPrice,
 
 		@NotBlank(message = "도착지를 입력해주세요.")
@@ -14,7 +15,7 @@ public record OrderRequestDTO(
 
 		String orderRequest,
 
-		@NotBlank(message = "포장 여부를 입력해주세요.")
+		@NotNull(message = "포장 여부를 입력해주세요.")
 		Boolean isTakeOut,
 
 		String status,
