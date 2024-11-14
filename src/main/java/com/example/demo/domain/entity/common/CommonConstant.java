@@ -11,6 +11,8 @@ public class CommonConstant {
 
 		public static final String PHONE = "^(01[0-9]|02|[6-9])[-.]?\\d{3,4}[-.]?\\d{4}$";
 
+		public static final String DISTRICT = "^서울특별시\\s+[가-힣]+구$";
+
 	}
 
 }
