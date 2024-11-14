@@ -48,4 +48,13 @@ public class CategoryMenuController implements CategoryMenuControllerDocs {
                 .build();
     }
 
+    @DeleteMapping("/{categoryMenuId}")
+    public Response<Void> deleteCategoryMenu(@PathVariable UUID categoryMenuId){
+
+        categoryMenuService.deleteCategoryMenu(categoryMenuId);
+
+        return Response.<Void>builder()
+                .build();
+    }
+
 }

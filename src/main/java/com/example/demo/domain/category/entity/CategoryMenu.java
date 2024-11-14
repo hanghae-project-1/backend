@@ -22,6 +22,7 @@ public class CategoryMenu {
     UUID id;
 
     @NotNull
+    @Column(unique = true)
     String name;
 
     public void updateCategoryMenu(CategoryMenuRequestDto requestDto) {
