@@ -26,8 +26,7 @@ public class CategoryMenuService {
 
         CategoryMenu categoryMenu = categoryMenuMapper.toCategoryMenuEntity(requestDto);
 
-        checkForDuplicateName(requestDto);
-
+        checkForDuplicateName(requestDto.name());
         categoryMenuRepository.save(categoryMenu);
 
     }
@@ -43,16 +42,26 @@ public class CategoryMenuService {
 
     @Transactional
     public void modifyCategoryMenu(UUID categoryMenuId, CategoryMenuRequestDto requestDto) {
-        CategoryMenu categoryMenu = categoryMenuRepository.findById(categoryMenuId).orElseThrow(NotFoundCategoryMenuException::new);
+        CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
 
-        checkForDuplicateName(requestDto);
+        checkForDuplicateName(requestDto.name());
 
         categoryMenu.updateCategoryMenu(requestDto);
         categoryMenuRepository.save(categoryMenu);
     }
 
-    private void checkForDuplicateName(CategoryMenuRequestDto requestDto) {
-        boolean exists = categoryMenuRepository.existsByName(requestDto.name());
+    public void deleteCategoryMenu(UUID categoryMenuId) {
+        CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
+
+        categoryMenuRepository.delete(categoryMenu);
+    }
+
+    private CategoryMenu getCategoryMenu(UUID categoryMenuId) {
+        return categoryMenuRepository.findById(categoryMenuId).orElseThrow(NotFoundCategoryMenuException::new);
+    }
+
+    private void checkForDuplicateName(String name) {
+        boolean exists = categoryMenuRepository.existsByName(name);
         if(exists){
             throw new DuplicateCategoryMenuException();
         }
