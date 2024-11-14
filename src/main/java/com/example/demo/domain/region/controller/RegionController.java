@@ -45,4 +45,13 @@ public class RegionController {
         return Response.<Void>builder()
                 .build();
     }
+
+    @DeleteMapping("/{regionId}")
+    public Response<Void> deleteRegion(@PathVariable UUID regionId){
+
+        regionService.deleteRegion(regionId);
+
+        return Response.<Void>builder()
+                .build();
+    }
 }

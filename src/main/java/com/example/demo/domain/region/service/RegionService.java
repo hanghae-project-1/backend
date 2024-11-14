@@ -37,9 +37,19 @@ public class RegionService {
 
     public void modifyRegion(UUID regionId, RegionRequestDto requestDto) {
 
-        Region region = regionRepository.findById(regionId).orElseThrow(NotFoundRegionException::new);
+        Region region = getRegion(regionId);
 
         region.updateRegion(requestDto);
         regionRepository.save(region);
+    }
+
+    public void deleteRegion(UUID regionId) {
+        Region region = getRegion(regionId);
+
+        regionRepository.delete(region);
+    }
+
+    private Region getRegion(UUID regionId) {
+        return regionRepository.findById(regionId).orElseThrow(NotFoundRegionException::new);
     }
 }
