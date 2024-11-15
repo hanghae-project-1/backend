@@ -7,6 +7,7 @@ import com.example.demo.domain.region.entity.Region;
 import com.example.demo.domain.region.exception.NotFoundRegionException;
 import com.example.demo.domain.region.repository.RegionRepository;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.store.exception.DuplicateStoreNameException;
 import com.example.demo.domain.store.exception.NotFoundStoreException;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,6 +36,15 @@ public class StoreService {
         Store store = storeMapper.toStoreEntity(requestDto);
         storeRepository.save(store);
 
+
+    }
+
+
+    public List<StoreResponseDto> searchStores(UUID categoryId, UUID regionId) {
+
+        List<Store> storeList = storeRepository.searchByFilters(categoryId, regionId);
+
+        return storeList.stream().map(storeMapper::toStoreResponseDto).toList();
 
     }
 
@@ -61,6 +72,7 @@ public class StoreService {
     public void deleteStore(UUID storeId) {
 
         Store store = getStore(storeId);
+        store.markAsDelete();
 
         storeRepository.delete(store);
 

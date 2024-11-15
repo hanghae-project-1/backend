@@ -3,12 +3,14 @@ package com.example.demo.domain.store.controller;
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.store.controller.docs.StoreControllerDocs;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import com.example.demo.domain.store.service.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,6 +30,16 @@ public class StoreController implements StoreControllerDocs{
                 .message(HttpStatus.CREATED.getReasonPhrase())
                 .build();
 
+    }
+
+    @GetMapping("/search")
+    public Response<List<StoreResponseDto>> searchStores(
+            @RequestParam(required = false) UUID categoryId,
+            @RequestParam(required = false) UUID regionId
+    ){
+        return Response.<List<StoreResponseDto>>builder()
+                .data(storeService.searchStores(categoryId, regionId))
+                .build();
     }
 
     @PatchMapping("/{storeId}")

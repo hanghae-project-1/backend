@@ -46,6 +46,7 @@ public class RegionService {
     public void deleteRegion(UUID regionId) {
         Region region = getRegion(regionId);
 
+        region.markAsDelete();
         regionRepository.delete(region);
     }
 

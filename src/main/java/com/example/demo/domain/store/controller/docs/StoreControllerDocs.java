@@ -2,6 +2,7 @@ package com.example.demo.domain.store.controller.docs;
 
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,11 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Store", description = "음식점 등록, 조회, 수정, 삭제 관련 사용자 API")
@@ -28,6 +27,16 @@ public interface StoreControllerDocs {
     @PostMapping("/api/v1/store/create/q")
     Response<Void> createStore(@Valid @RequestBody StoreRequestDto request);
 
+    @Operation(summary = "음식점 검색", description = "음식점을 검색하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "음식점 검색 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "음식점 검색 실패.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping("/search")
+    Response<List<StoreResponseDto>> searchStores(
+            @RequestParam(required = false) UUID categoryId,
+            @RequestParam(required = false) UUID regionId
+    );
 
     @Operation(summary = "음식점 수정", description = "음식점 ID 를 통해 음식점을 수정하는 API 입니다.")
     @ApiResponses(value = {
