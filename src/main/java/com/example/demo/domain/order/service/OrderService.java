@@ -1,6 +1,5 @@
 package com.example.demo.domain.order.service;
 
-import com.example.demo.domain.entity.Store;
 import com.example.demo.domain.order.entity.Order;
 import com.example.demo.domain.order.entity.OrderDetail;
 import com.example.demo.domain.order.exception.IncorrectTotalPriceException;
@@ -12,7 +11,8 @@ import com.example.demo.domain.order.model.request.OrderRequestDTO;
 import com.example.demo.domain.order.model.response.OrderResponseDTO;
 import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import com.example.demo.domain.order.repository.OrderRepository;
-import com.example.demo.domain.order.repository.StoreRepository;
+import com.example.demo.domain.store.entity.Store;
+import com.example.demo.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

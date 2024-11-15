@@ -1,8 +1,9 @@
-package com.example.demo.domain.entity;
+package com.example.demo.domain.store.entity;
 
+import com.example.demo.domain.category.entity.CategoryMenu;
 import com.example.demo.domain.entity.common.BaseEntity;
 import com.example.demo.domain.entity.common.CommonConstant;
-import com.example.demo.domain.entity.common.Status;
+import com.example.demo.domain.region.entity.Region;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -33,5 +34,14 @@ public class Store extends BaseEntity {
 
 	@NotNull
 	String address;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id")
+	CategoryMenu categoryMenu;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "region_id")
+	Region region;
+
 
 }

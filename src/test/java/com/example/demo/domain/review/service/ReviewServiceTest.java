@@ -1,6 +1,6 @@
 package com.example.demo.domain.review.service;
 
-import com.example.demo.domain.entity.Store;
+import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.order.entity.Order;
 import com.example.demo.domain.order.exception.IsNotYourOrderException;
 import com.example.demo.domain.order.repository.OrderRepository;

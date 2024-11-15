@@ -1,6 +1,6 @@
 package com.example.demo.domain.order.entity;
 
-import com.example.demo.domain.entity.Store;
+import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.entity.common.BaseEntity;
 import com.example.demo.domain.entity.common.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;

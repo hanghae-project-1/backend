@@ -56,7 +56,6 @@ public abstract class BaseEntity {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	LocalDateTime deletedAt;
 
-	@NotNull
 	UUID deletedBy;
 
 	public void markAsDelete() {

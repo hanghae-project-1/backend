@@ -26,6 +26,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Error {
 
+	DUPLICATE_STORE_NAME(3000, "같은 지역 내에 이미 존재하는 음식점 이름입니다."),
+
 	NOT_FOUND_ORDER(5000, "해당 주문을 찾을 수 없습니다."),
 	RETURN_PERIOD_PASSED(5001, "주문을 취소할 수 없습니다."),
 	ORDER_BEEN_CANCELED(5002, "주문이 취소되었습니다."),
