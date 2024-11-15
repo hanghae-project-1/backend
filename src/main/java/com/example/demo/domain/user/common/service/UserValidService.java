@@ -1,9 +1,7 @@
 package com.example.demo.domain.user.common.service;
 
 import org.springframework.stereotype.Service;
-
 import com.example.demo.domain.user.common.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
