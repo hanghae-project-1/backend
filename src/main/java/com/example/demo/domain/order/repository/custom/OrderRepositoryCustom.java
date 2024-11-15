@@ -9,6 +9,6 @@ public interface OrderRepositoryCustom {
 
 	Order getOrderWithFullDetails(UUID orderId);
 
-	List<Order> getOrdersWithFullDetails(UUID userId);
+	List<Order> getOrdersWithFullDetails(String userId);
 
 }

@@ -12,6 +12,7 @@ import com.example.demo.domain.review.mapper.ReviewMapper;
 import com.example.demo.domain.review.model.request.BaseReviewRequestDTO;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
 import com.example.demo.domain.review.repository.ReviewRepository;
+import com.example.demo.domain.user.common.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,13 +52,16 @@ class ReviewServiceTest {
 	private OrderRepository orderRepository;
 
 	@Mock
+	private UserService userService;
+
+	@Mock
 	private ReviewMapper reviewMapper;
 
 	@Nested
 	@DisplayName("리뷰 생성 테스트")
 	class createReviewTest {
 
-		private Order createMockOrder(UUID orderId, UUID userId, LocalDateTime createdAt) {
+		private Order createMockOrder(UUID orderId, String userId, LocalDateTime createdAt) {
 
 			Order order = new Order();
 			ReflectionTestUtils.setField(order, "id", orderId);
@@ -85,7 +89,7 @@ class ReviewServiceTest {
 			// Given
 			UUID orderId = UUID.randomUUID();
 			UUID reviewId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			Order mockOrder = createMockOrder(orderId, userId, LocalDateTime.now().minusMinutes(3));
 			Review mockReview = createMockReview(reviewId, mockOrder);
 
@@ -100,9 +104,10 @@ class ReviewServiceTest {
 			when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
 			when(reviewMapper.toEntity(request)).thenReturn(mockReview);
 			when(reviewRepository.save(any(Review.class))).thenReturn(mockReview);
+			when(userService.getCurrentUsername()).thenReturn(userId);
 
 			// When
-			reviewService.createReview(request, userId);
+			reviewService.createReview(request);
 
 			// Then
 			ArgumentCaptor<Review> reviewArgumentCaptor = ArgumentCaptor.forClass(Review.class);
@@ -121,7 +126,7 @@ class ReviewServiceTest {
 
 			// Given
 			UUID orderId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			Order mockOrder = createMockOrder(orderId, userId, LocalDateTime.now().minusMinutes(3));
 
 			ReviewRequestDTO request = new ReviewRequestDTO(
@@ -137,7 +142,7 @@ class ReviewServiceTest {
 			// When & Then
 			assertThrows(
 					IsNotYourOrderException.class,
-					() -> reviewService.createReview(request, UUID.randomUUID())
+					() -> reviewService.createReview(request)
 			);
 
 		}
@@ -148,7 +153,7 @@ class ReviewServiceTest {
 
 			// Given
 			UUID orderId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			Order mockOrder = createMockOrder(orderId, userId, LocalDateTime.now().minusMinutes(3));
 
 			ReflectionTestUtils.setField(mockOrder, "status", SHIPPING);
@@ -162,11 +167,12 @@ class ReviewServiceTest {
 			);
 
 			when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+			when(userService.getCurrentUsername()).thenReturn(userId);
 
 			// When & Then
 			assertThrows(
 					PurchaseIsNotConfirmedException.class,
-					() -> reviewService.createReview(request, userId)
+					() -> reviewService.createReview(request)
 			);
 
 		}
@@ -177,7 +183,7 @@ class ReviewServiceTest {
 	@DisplayName("리뷰 수정 테스트")
 	class modifyReviewStatusTest {
 
-		private Order createMockOrder(UUID orderId, UUID userId, LocalDateTime createdAt) {
+		private Order createMockOrder(UUID orderId, String userId, LocalDateTime createdAt) {
 
 			Order order = new Order();
 			ReflectionTestUtils.setField(order, "id", orderId);
@@ -188,7 +194,7 @@ class ReviewServiceTest {
 			return order;
 		}
 
-		private Review createMockReview(UUID reviewId, UUID userId, UUID orderId) {
+		private Review createMockReview(UUID reviewId, String userId, UUID orderId) {
 
 			Review review = new Review();
 			ReflectionTestUtils.setField(review, "id", reviewId);
@@ -205,15 +211,16 @@ class ReviewServiceTest {
 
 			// Given
 			UUID reviewId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			UUID orderId = UUID.randomUUID();
 			Review mockReview = createMockReview(reviewId, userId, orderId);
 
 			when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
 			when(reviewRepository.save(any(Review.class))).thenReturn(mockReview);
+			when(userService.getCurrentUsername()).thenReturn(userId);
 
 			// When
-			reviewService.modifyReviewStatus(reviewId, userId);
+			reviewService.modifyReviewStatus(reviewId);
 
 			// Then
 			assertTrue(mockReview.getIsDelete());
@@ -228,7 +235,7 @@ class ReviewServiceTest {
 
 			// Given
 			UUID reviewId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			UUID orderId = UUID.randomUUID();
 			Review mockReview = createMockReview(reviewId, userId, orderId);
 
@@ -237,7 +244,7 @@ class ReviewServiceTest {
 			// When & Then
 			assertThrows(
 					IsNotYourOrderException.class,
-					() -> reviewService.modifyReviewStatus(reviewId, UUID.randomUUID())
+					() -> reviewService.modifyReviewStatus(reviewId)
 			);
 		}
 
@@ -247,18 +254,19 @@ class ReviewServiceTest {
 
 			// Given
 			UUID reviewId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			UUID orderId = UUID.randomUUID();
 			Review mockReview = createMockReview(reviewId, userId, orderId);
 
-			ReflectionTestUtils.setField(mockReview, "createdBy", UUID.randomUUID());
+			ReflectionTestUtils.setField(mockReview, "createdBy", String.valueOf(UUID.randomUUID()));
 
 			when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+			when(userService.getCurrentUsername()).thenReturn(userId);
 
 			// When & Then
 			assertThrows(
 					IsNotYourReviewException.class,
-					() -> reviewService.modifyReviewStatus(reviewId, userId)
+					() -> reviewService.modifyReviewStatus(reviewId)
 			);
 		}
 
@@ -275,7 +283,7 @@ class ReviewServiceTest {
 			// When & Then
 			assertThrows(
 					NotFoundReviewException.class,
-					() -> reviewService.modifyReviewStatus(reviewId, userId)
+					() -> reviewService.modifyReviewStatus(reviewId)
 			);
 		}
 	}
@@ -284,7 +292,7 @@ class ReviewServiceTest {
 	@DisplayName("리뷰 목록 조회 테스트")
 	class getReview {
 
-		private List<Review> createMockReviewList(UUID userId) {
+		private List<Review> createMockReviewList(String userId) {
 
 			Store store = new Store();
 			ReflectionTestUtils.setField(store, "id", UUID.randomUUID());
@@ -315,7 +323,7 @@ class ReviewServiceTest {
 		void getUserReviewList_SUCCESS() {
 
 			// Given
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 
 			Pageable pageable = PageRequest.of(0, 10);
 			Page<Review> emptyPage = new PageImpl<>(createMockReviewList(userId), pageable, 2);
@@ -338,7 +346,7 @@ class ReviewServiceTest {
 
 			Pageable pageable = PageRequest.of(0, 10);
 
-			Page<Review> emptyPage = new PageImpl<>(createMockReviewList(UUID.randomUUID()), pageable, 2);
+			Page<Review> emptyPage = new PageImpl<>(createMockReviewList(String.valueOf(UUID.randomUUID())), pageable, 2);
 
 			when(reviewRepository.findAllByIsDeleteTrueAndIsPublicFalseAndOrderStoreId(storeId, pageable)).thenReturn(emptyPage);
 

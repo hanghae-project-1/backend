@@ -1,7 +1,7 @@
-package com.example.demo.domain.store.entity;
+package com.example.demo.domain.entity;
 
+import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.domain.category.entity.CategoryMenu;
-import com.example.demo.domain.entity.common.BaseEntity;
 import com.example.demo.domain.entity.common.CommonConstant;
 import com.example.demo.domain.region.entity.Region;
 import jakarta.persistence.*;
