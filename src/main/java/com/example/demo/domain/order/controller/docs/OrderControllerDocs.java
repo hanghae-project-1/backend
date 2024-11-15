@@ -1,7 +1,6 @@
 package com.example.demo.domain.order.controller.docs;
 
 import com.example.demo.common.model.response.Response;
-import com.example.demo.domain.entity.user.User;
 import com.example.demo.domain.order.model.request.OrderRequestDTO;
 import com.example.demo.domain.order.model.response.OrderResponseDTO;
 import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -46,14 +44,14 @@ public interface OrderControllerDocs {
 			@ApiResponse(responseCode = "404", description = "주문을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
 	})
 	@GetMapping("/api/v1/order/{orderId}")
-	Response<OrderResponseDTO> getOrderDetails(@PathVariable UUID orderId, @AuthenticationPrincipal User user);
+	Response<OrderResponseDTO> getOrderDetails(@PathVariable UUID orderId);
 
 	@Operation(summary = "내 주문 전체 조회", description = "사용자 ID 를 통해 주문 전체를 조회하는 API 입니다.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "주문 조회 성공", content = @Content(schema = @Schema(implementation = Response.class)))
 	})
 	@GetMapping("/api/v1/order/user")
-	Response<List<OrderResponseDTO>> getAllOrdersByCustomer(@AuthenticationPrincipal User user);
+	Response<List<OrderResponseDTO>> getAllOrdersByCustomer();
 
 	@Operation(summary = "가게 주문 조회", description = "사용자 ID 를 통해 주문 전체를 조회하는 API 입니다.")
 	@ApiResponses(value = {
@@ -62,7 +60,6 @@ public interface OrderControllerDocs {
 	@GetMapping("/api/v1/order/store/{storeId}")
 	Response<StoreOrderResponseDTO> getAllOrdersByStore(@PathVariable UUID storeId,
 	                                                    @RequestBody LocalDateTime startDate,
-	                                                    @RequestBody LocalDateTime endDate,
-	                                                    @AuthenticationPrincipal User user);
+	                                                    @RequestBody LocalDateTime endDate);
 
 }

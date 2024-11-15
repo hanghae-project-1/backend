@@ -17,6 +17,7 @@ import com.example.demo.domain.order.model.response.OrderResponseDTO;
 import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import com.example.demo.domain.order.repository.OrderRepository;
 import com.example.demo.domain.order.repository.StoreRepository;
+import com.example.demo.domain.user.common.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,9 @@ class OrderServiceTest {
 
 	@Mock
 	private StoreRepository storeRepository;
+
+	@Mock
+	private UserService userService;
 
 	@Mock
 	private OrderMapper orderMapper;
@@ -210,7 +214,7 @@ class OrderServiceTest {
 	@DisplayName("주문 조회 테스트")
 	class getOrderDetailsTest {
 
-		private Order createMockOrder(UUID id, UUID userId, UUID menuId) {
+		private Order createMockOrder(UUID id, String userId, UUID menuId) {
 			Order order = new Order();
 			OrderDetail orderDetail = new OrderDetail();
 			Menu menu = new Menu();
@@ -225,7 +229,7 @@ class OrderServiceTest {
 			return order;
 		}
 
-		private Order createMockStoreOrder(UUID storeId, UUID orderId, UUID userId) {
+		private Order createMockStoreOrder(UUID storeId, UUID orderId, String userId) {
 
 			Store store = new Store();
 			Order order = new Order();
@@ -245,11 +249,12 @@ class OrderServiceTest {
 
 			// Given
 			UUID orderId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			UUID menuId = UUID.randomUUID();
 
 			Order mockOrder = createMockOrder(orderId, userId, menuId);
 
+			when(userService.getCurrentUsername()).thenReturn(userId);
 			when(orderRepository.getOrderWithFullDetails(orderId)).thenReturn(mockOrder);
 			when(orderMapper.toOrderResponseDTO(mockOrder)).thenReturn(new OrderResponseDTO(
 					new BaseOrderDTO(
@@ -270,7 +275,7 @@ class OrderServiceTest {
 			));
 
 			// When
-			OrderResponseDTO orderResponseDTO = orderService.getOrderDetails(orderId, userId);
+			OrderResponseDTO orderResponseDTO = orderService.getOrderDetails(orderId);
 
 			// Then
 			assertThat(orderResponseDTO.baseOrder().id()).isEqualTo(orderId);
@@ -282,17 +287,18 @@ class OrderServiceTest {
 
 			// Given
 			UUID orderId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			UUID menuId = UUID.randomUUID();
 
-			Order mockOrder = createMockOrder(orderId, UUID.randomUUID(), menuId);
+			Order mockOrder = createMockOrder(orderId, String.valueOf(UUID.randomUUID()), menuId);
 
 			when(orderRepository.getOrderWithFullDetails(orderId)).thenReturn(mockOrder);
+			when(userService.getCurrentUsername()).thenReturn(userId);
 
 			// When & Then
 			assertThrows(
 					IsNotYourOrderException.class,
-					() -> orderService.getOrderDetails(orderId, userId)
+					() -> orderService.getOrderDetails(orderId)
 			);
 
 		}
@@ -302,11 +308,12 @@ class OrderServiceTest {
 		void getOrdersByCustomer_SUCCESS() {
 
 			// Given
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			UUID menuId = UUID.randomUUID();
 
 			Order mockOrder = createMockOrder(UUID.randomUUID(), userId, menuId);
 
+			when(userService.getCurrentUsername()).thenReturn(userId);
 			when(orderRepository.getOrdersWithFullDetails(userId)).thenReturn(List.of(mockOrder));
 			when(orderMapper.toOrderResponseDTO(mockOrder)).thenReturn(new OrderResponseDTO(
 					new BaseOrderDTO(
@@ -327,7 +334,7 @@ class OrderServiceTest {
 			));
 
 			// When
-			List<OrderResponseDTO> orderResponseDTOList = orderService.getAllOrdersByCustomer(userId);
+			List<OrderResponseDTO> orderResponseDTOList = orderService.getAllOrdersByCustomer();
 
 			// Then
 			assertThat(orderResponseDTOList).hasSize(1);
@@ -339,17 +346,18 @@ class OrderServiceTest {
 		void getOrdersByCustomer_FAIL() {
 
 			// Given
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			UUID menuId = UUID.randomUUID();
 
-			Order mockOrder = createMockOrder(UUID.randomUUID(), UUID.randomUUID(), menuId);
+			Order mockOrder = createMockOrder(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), menuId);
 
+			when(userService.getCurrentUsername()).thenReturn(userId);
 			when(orderRepository.getOrdersWithFullDetails(userId)).thenReturn(List.of(mockOrder));
 
 			// When & Then
 			assertThrows(
 					IsNotYourOrderException.class,
-					() -> orderService.getAllOrdersByCustomer(userId)
+					() -> orderService.getAllOrdersByCustomer()
 			);
 
 		}
@@ -361,12 +369,13 @@ class OrderServiceTest {
 			// Given
 			UUID storeId = UUID.randomUUID();
 			UUID orderId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			LocalDateTime endDate = LocalDateTime.now();
 			LocalDateTime startDate = endDate.minusDays(7);
 
 			Order mockStoreOrder = createMockStoreOrder(storeId, orderId, userId);
 
+			when(userService.getCurrentUsername()).thenReturn(userId);
 			when(storeRepository.findById(storeId)).thenReturn(Optional.of(mockStoreOrder.getStore()));
 			when(orderRepository.findAllByStoreIdAndCreatedAtBetween(storeId, startDate, endDate)).thenReturn(List.of(mockStoreOrder));
 			when(orderMapper.toStoreOrderResponseDTO(List.of(mockStoreOrder))).thenReturn(new StoreOrderResponseDTO(
@@ -381,7 +390,7 @@ class OrderServiceTest {
 			));
 
 			// When
-			StoreOrderResponseDTO storeOrderResponseDTO = orderService.getAllOrdersByStore(storeId, startDate, endDate, userId);
+			StoreOrderResponseDTO storeOrderResponseDTO = orderService.getAllOrdersByStore(storeId, startDate, endDate);
 
 			// Then
 			assertThat(storeOrderResponseDTO.periodOrderCount()).isEqualTo(1);
@@ -397,7 +406,7 @@ class OrderServiceTest {
 			// Given
 			UUID storeId = UUID.randomUUID();
 			UUID orderId = UUID.randomUUID();
-			UUID userId = UUID.randomUUID();
+			String userId = String.valueOf(UUID.randomUUID());
 			LocalDateTime endDate = LocalDateTime.now();
 			LocalDateTime startDate = endDate.minusDays(7);
 
@@ -408,7 +417,7 @@ class OrderServiceTest {
 			// When & Then
 			assertThrows(
 					IllegalArgumentException.class,
-					() -> orderService.getAllOrdersByStore(storeId, startDate, endDate, UUID.randomUUID())
+					() -> orderService.getAllOrdersByStore(storeId, startDate, endDate)
 			);
 
 		}

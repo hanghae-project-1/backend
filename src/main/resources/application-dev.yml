@@ -38,6 +38,5 @@ spring:
   config:
     import: classpath:application-key.yml
 
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+  jwt:
+    secret: ${JWT_SECRET_KEY}
