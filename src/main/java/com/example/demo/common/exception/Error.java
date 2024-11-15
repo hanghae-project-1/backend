@@ -26,7 +26,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Error {
 
-	DUPLICATE_STORE_NAME(3000, "같은 지역 내에 이미 존재하는 음식점 이름입니다."),
+	DUPLICATE_USERNAME_EXISTS(1000, "중복된 사용자 ID가 있습니다."),
+	NOT_FOUND_URI(1001, "해당 하는 URI는 없습니다."),
 
 	NOT_FOUND_ORDER(5000, "해당 주문을 찾을 수 없습니다."),
 	RETURN_PERIOD_PASSED(5001, "주문을 취소할 수 없습니다."),
@@ -37,7 +38,7 @@ public enum Error {
 	NOT_FOUND_REVIEW(7000, "해당 리뷰를 찾을 수 없습니다."),
 	PURCHASE_IS_NOT_CONFIRMED(7100, "리뷰는 구매 확정 후 작성할 수 있습니다."),
 	IS_NOT_YOUR_REVIEW(7101, "본인의 주문에만 리뷰를 작성할 수 있습니다."),
-	
+
 	DUPLICATE_CATEGORYMENU_NAME(9000, "중복된 카테고리 이름입니다."),
 	NOT_FOUND_CATEGORYMENU(9001, "해당 카테고리를 찾을 수 없습니다."),
 
@@ -48,6 +49,5 @@ public enum Error {
 	final Integer code;
 
 	final String message;
-
 
 }

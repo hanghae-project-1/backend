@@ -1,6 +1,16 @@
-package com.example.demo.domain.entity.common;
+package com.example.demo.common.config.entity;
+
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -9,15 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @SuperBuilder
@@ -43,20 +44,19 @@ public abstract class BaseEntity {
 
 	@CreatedBy
 	@Column(updatable = false)
-	UUID createdBy;
+	String createdBy;
 
 	@LastModifiedDate
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	LocalDateTime updatedAt;
 
 	@LastModifiedBy
-	UUID updatedBy;
+	String updatedBy;
 
-	//TODO: 필요한 엔티티에 입력 메서드 추가
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	LocalDateTime deletedAt;
 
-	UUID deletedBy;
+	String deletedBy;
 
 	public void markAsDelete() {
 		this.isDelete = true;
