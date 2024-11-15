@@ -1,5 +1,6 @@
 package com.example.demo.domain.region.entity;
 
+import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.domain.entity.common.CommonConstant;
 import com.example.demo.domain.region.dto.request.RegionRequestDto;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "p_region")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Region {
+public class Region extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

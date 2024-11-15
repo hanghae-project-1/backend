@@ -53,6 +53,7 @@ public class CategoryMenuService {
     public void deleteCategoryMenu(UUID categoryMenuId) {
         CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
 
+        categoryMenu.markAsDelete();
         categoryMenuRepository.delete(categoryMenu);
     }
 

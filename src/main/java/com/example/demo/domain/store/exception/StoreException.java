@@ -1,4 +1,4 @@
-package com.example.demo.domain.order.exception;
+package com.example.demo.domain.store.exception;
 
 import com.example.demo.common.exception.Error;
 import lombok.AccessLevel;
@@ -8,13 +8,13 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class OrderException extends RuntimeException{
+public class StoreException extends RuntimeException{
 
     Error error;
 
     HttpStatus httpStatus;
 
-    public OrderException(Error error, HttpStatus httpStatus) {
+    public StoreException(Error error, HttpStatus httpStatus) {
         this.error = error;
         this.httpStatus = httpStatus;
     }
