@@ -1,6 +1,6 @@
 package com.example.demo.domain.entity;
 
-import com.example.demo.domain.entity.common.BaseEntity;
+import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.domain.entity.common.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

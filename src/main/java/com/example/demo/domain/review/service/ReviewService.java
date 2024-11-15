@@ -12,6 +12,7 @@ import com.example.demo.domain.review.mapper.ReviewMapper;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
 import com.example.demo.domain.review.model.response.ReviewListResponseDTO;
 import com.example.demo.domain.review.repository.ReviewRepository;
+import com.example.demo.domain.user.common.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,16 +28,18 @@ import static com.example.demo.domain.entity.common.Status.Order.ORDER_COMPLETED
 @RequiredArgsConstructor
 public class ReviewService {
 
+	private final UserService userService;
 	private final ReviewMapper reviewMapper;
 	private final OrderRepository orderRepository;
 	private final ReviewRepository reviewRepository;
 
 	@Transactional
-	public void createReview(@Valid ReviewRequestDTO request, UUID userId) {
+	public void createReview(@Valid ReviewRequestDTO request) {
+
 
 		orderRepository.findById(request.orderId()).ifPresentOrElse(order -> {
 
-					validateOrderByUser(order.getCreatedBy(), userId);
+					validateOrderByUser(order.getCreatedBy(), userService.getCurrentUsername());
 					validateOrderStatus(order.getStatus());
 
 					reviewRepository.save(reviewMapper.toEntity(request));
@@ -48,12 +51,13 @@ public class ReviewService {
 	}
 
 	@Transactional
-	public void modifyReviewStatus(UUID reviewId, UUID userId) {
+	public void modifyReviewStatus(UUID reviewId) {
 
 		reviewRepository.findById(reviewId).ifPresentOrElse(review -> {
 
-			validateOrderByUser(review.getOrder().getCreatedBy(), userId);
-			validateReviewByUser(review.getCreatedBy(), userId);
+			String currentUsername = userService.getCurrentUsername();
+			validateOrderByUser(review.getOrder().getCreatedBy(), currentUsername);
+			validateReviewByUser(review.getCreatedBy(), currentUsername);
 
 			review.markAsDelete();
 
@@ -65,7 +69,7 @@ public class ReviewService {
 	}
 
 	@Transactional(readOnly = true)
-	public ReviewListResponseDTO getUserReviewList(UUID userId, Pageable pageable) {
+	public ReviewListResponseDTO getUserReviewList(String userId, Pageable pageable) {
 
 		Page<Review> userReviewList = reviewRepository.findAllByCreatedBy(userId, pageable);
 
@@ -86,8 +90,8 @@ public class ReviewService {
 		);
 	}
 
-	private void validateReviewByUser(UUID reviewId, UUID userId) {
-		if (!reviewId.equals(userId)) {
+	private void validateReviewByUser(String createBy, String userId) {
+		if (!createBy.equals(userId)) {
 			throw new IsNotYourReviewException();
 		}
 	}
@@ -98,8 +102,8 @@ public class ReviewService {
 		}
 	}
 
-	private void validateOrderByUser(UUID orderId, UUID userId) {
-		if (!orderId.equals(userId)) {
+	private void validateOrderByUser(String createBy, String userId) {
+		if (!createBy.equals(userId)) {
 			throw new IsNotYourOrderException();
 		}
 	}

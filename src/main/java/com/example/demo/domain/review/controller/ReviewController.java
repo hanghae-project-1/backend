@@ -1,7 +1,6 @@
 package com.example.demo.domain.review.controller;
 
 import com.example.demo.common.model.response.Response;
-import com.example.demo.domain.entity.user.User;
 import com.example.demo.domain.review.controller.docs.ReviewControllerDocs;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
 import com.example.demo.domain.review.model.response.ReviewListResponseDTO;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,22 +22,22 @@ public class ReviewController implements ReviewControllerDocs {
 	private final ReviewService reviewService;
 
 	@PostMapping
-	public Response<Void> createReview(@Valid @RequestBody ReviewRequestDTO request, @AuthenticationPrincipal User user) {
+	public Response<Void> createReview(@Valid @RequestBody ReviewRequestDTO request) {
 
-		reviewService.createReview(request, user.getId());
+		reviewService.createReview(request);
 		return Response.<Void>builder()
 				.build();
 	}
 
 	@PatchMapping("/{reviewId}")
-	public Response<Void> modifyReviewStatus(@PathVariable UUID reviewId, @AuthenticationPrincipal User user) {
-		reviewService.modifyReviewStatus(reviewId, user.getId());
+	public Response<Void> modifyReviewStatus(@PathVariable UUID reviewId) {
+		reviewService.modifyReviewStatus(reviewId);
 		return Response.<Void>builder()
 				.build();
 	}
 
 	@GetMapping("/user/{userId}")
-	public Response<ReviewListResponseDTO> getUserReviewList(@PathVariable UUID userId,
+	public Response<ReviewListResponseDTO> getUserReviewList(@PathVariable String userId,
 	                                                         @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
 	                                                         Pageable pageable) {
 		return Response.<ReviewListResponseDTO>builder()

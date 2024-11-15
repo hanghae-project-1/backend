@@ -13,6 +13,7 @@ import com.example.demo.domain.order.model.response.OrderResponseDTO;
 import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import com.example.demo.domain.order.repository.OrderRepository;
 import com.example.demo.domain.order.repository.StoreRepository;
+import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import static com.example.demo.domain.entity.common.Status.Order.ORDER_COMPLETED
 public class OrderService {
 
 	private final OrderMapper orderMapper;
+	private final UserService userService;
 	private final OrderRepository orderRepository;
 	private final StoreRepository storeRepository;
 
@@ -74,11 +76,12 @@ public class OrderService {
 	}
 
 	@Transactional(readOnly = true)
-	public OrderResponseDTO getOrderDetails(UUID orderId, UUID userId) {
+	public OrderResponseDTO getOrderDetails(UUID orderId) {
 
 		Order order = orderRepository.getOrderWithFullDetails(orderId);
+		String currentUsername = userService.getCurrentUsername();
 
-		if (!order.getCreatedBy().equals(userId)) {
+		if (!order.getCreatedBy().equals(currentUsername)) {
 			throw new IsNotYourOrderException();
 		}
 
@@ -86,13 +89,16 @@ public class OrderService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<OrderResponseDTO> getAllOrdersByCustomer(UUID userId) {
+	public List<OrderResponseDTO> getAllOrdersByCustomer() {
 
-		List<Order> orderList = orderRepository.getOrdersWithFullDetails(userId);
+
+		String currentUsername = userService.getCurrentUsername();
+
+		List<Order> orderList = orderRepository.getOrdersWithFullDetails(currentUsername);
 
 		return orderList.stream().map(order -> {
 
-			if (!order.getCreatedBy().equals(userId))
+			if (!order.getCreatedBy().equals(currentUsername))
 				throw new IsNotYourOrderException();
 
 			return orderMapper.toOrderResponseDTO(order);
@@ -100,12 +106,14 @@ public class OrderService {
 	}
 
 	@Transactional(readOnly = true)
-	public StoreOrderResponseDTO getAllOrdersByStore(UUID storeId, LocalDateTime startDate, LocalDateTime endDate, UUID userId) {
+	public StoreOrderResponseDTO getAllOrdersByStore(UUID storeId, LocalDateTime startDate, LocalDateTime endDate) {
+
+		String currentUsername = userService.getCurrentUsername();
 
 		//TODO: (준석) store 추가되면 repo, exception 수정하기
 		Store store = storeRepository.findById(storeId).orElseThrow();
 
-		if (!store.getCreatedBy().equals(userId)) {
+		if (!store.getCreatedBy().equals(currentUsername)) {
 			throw new IllegalArgumentException();
 		}
 

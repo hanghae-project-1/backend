@@ -1,7 +1,6 @@
 package com.example.demo.domain.order.controller;
 
 import com.example.demo.common.model.response.Response;
-import com.example.demo.domain.entity.user.User;
 import com.example.demo.domain.order.controller.docs.OrderControllerDocs;
 import com.example.demo.domain.order.model.request.OrderRequestDTO;
 import com.example.demo.domain.order.model.response.OrderResponseDTO;
@@ -10,7 +9,6 @@ import com.example.demo.domain.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -45,29 +43,28 @@ public class OrderController implements OrderControllerDocs {
 	}
 
 	@GetMapping("/{orderId}")
-	public Response<OrderResponseDTO> getOrderDetails(@PathVariable UUID orderId, @AuthenticationPrincipal User user) {
+	public Response<OrderResponseDTO> getOrderDetails(@PathVariable UUID orderId) {
 
 		return Response.<OrderResponseDTO>builder()
-				.data(orderService.getOrderDetails(orderId, user.getId()))
+				.data(orderService.getOrderDetails(orderId))
 				.build();
 	}
 
 	@GetMapping("/user")
-	public Response<List<OrderResponseDTO>> getAllOrdersByCustomer(@AuthenticationPrincipal User user) {
+	public Response<List<OrderResponseDTO>> getAllOrdersByCustomer() {
 
 		return Response.<List<OrderResponseDTO>>builder()
-				.data(orderService.getAllOrdersByCustomer(user.getId()))
+				.data(orderService.getAllOrdersByCustomer())
 				.build();
 	}
 
 	@GetMapping("/store/{storeId}")
 	public Response<StoreOrderResponseDTO> getAllOrdersByStore(@PathVariable UUID storeId,
 	                                                           @RequestBody LocalDateTime startDate,
-	                                                           @RequestBody LocalDateTime endDate,
-	                                                           @AuthenticationPrincipal User user) {
+	                                                           @RequestBody LocalDateTime endDate) {
 
 		return Response.<StoreOrderResponseDTO>builder()
-				.data(orderService.getAllOrdersByStore(storeId, startDate, endDate, user.getId()))
+				.data(orderService.getAllOrdersByStore(storeId, startDate, endDate))
 				.build();
 	}
 }
