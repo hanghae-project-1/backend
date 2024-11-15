@@ -2,14 +2,16 @@ package com.example.demo.domain.region.controller;
 
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.region.dto.request.RegionRequestDto;
+import com.example.demo.domain.region.dto.response.RegionResponseDto;
 import com.example.demo.domain.region.service.RegionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/region")
@@ -28,4 +30,28 @@ public class RegionController {
                 .build();
     }
 
+    @GetMapping
+    public Response<List<RegionResponseDto>> getAllRegion(){
+        return Response.<List<RegionResponseDto>>builder()
+                .data(regionService.getAllRegion())
+                .build();
+    }
+
+    @PatchMapping("/{regionId}")
+    public Response<Void> modifyRegion(@PathVariable UUID regionId, @RequestBody RegionRequestDto requestDto){
+
+        regionService.modifyRegion(regionId, requestDto);
+
+        return Response.<Void>builder()
+                .build();
+    }
+
+    @DeleteMapping("/{regionId}")
+    public Response<Void> deleteRegion(@PathVariable UUID regionId){
+
+        regionService.deleteRegion(regionId);
+
+        return Response.<Void>builder()
+                .build();
+    }
 }
