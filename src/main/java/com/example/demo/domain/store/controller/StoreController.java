@@ -39,4 +39,12 @@ public class StoreController implements StoreControllerDocs{
                 .build();
     }
 
+    @DeleteMapping("/{storeId}")
+    public Response<Void> deleteStore(@PathVariable UUID storeId){
+
+        storeService.deleteStore(storeId);
+
+        return Response.<Void>builder()
+                .build();
+    }
 }

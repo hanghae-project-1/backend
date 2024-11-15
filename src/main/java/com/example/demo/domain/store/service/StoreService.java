@@ -40,7 +40,7 @@ public class StoreService {
     @Transactional
     public void modifyStore(UUID storeId, StoreRequestDto requestDto) {
         
-        Store store = storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
+        Store store = getStore(storeId);
 
         Region region = store.getRegion();
         if (!region.getId().equals(requestDto.regionId())) {
@@ -55,6 +55,19 @@ public class StoreService {
         checkDuplicateStoreName(requestDto.name(), requestDto.regionId());
         store.updateStore(requestDto, region, categoryMenu);
         storeRepository.save(store);
+    }
+
+    @Transactional
+    public void deleteStore(UUID storeId) {
+
+        Store store = getStore(storeId);
+
+        storeRepository.delete(store);
+
+    }
+
+    private Store getStore(UUID storeId) {
+        return storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
     }
 
     private void checkDuplicateStoreName(String name, UUID regionId) {

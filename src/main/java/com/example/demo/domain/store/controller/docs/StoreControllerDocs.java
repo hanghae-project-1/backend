@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,4 +37,13 @@ public interface StoreControllerDocs {
     })
     @PatchMapping("/api/v1/store/{storeId}")
     Response<Void> modifyStore(@PathVariable UUID storeId, @RequestBody StoreRequestDto requestDto);
+
+    @Operation(summary = "음식점 삭제", description = "음식점 ID 를 통해 음식점을 삭제하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "음식점 삭제 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "음식점 삭제 실패", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "음식점을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @DeleteMapping("/api/v1/store/{storeId}")
+    Response<Void> deleteStore(@PathVariable UUID storeId);
 }
