@@ -1,5 +1,6 @@
 package com.example.demo.domain.category.entity;
 
+import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.domain.category.dto.request.CategoryMenuRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "p_category")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryMenu {
+public class CategoryMenu extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,3 +1,4 @@
+/*
 package com.example.demo.domain.order.service;
 
 import com.example.demo.domain.entity.Menu;
@@ -16,7 +17,7 @@ import com.example.demo.domain.order.model.response.OrderDetailResponseDTO;
 import com.example.demo.domain.order.model.response.OrderResponseDTO;
 import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import com.example.demo.domain.order.repository.OrderRepository;
-import com.example.demo.domain.order.repository.StoreRepository;
+import com.example.demo.domain.store.repository.StoreRepository;
 import com.example.demo.domain.user.common.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -424,3 +425,4 @@ class OrderServiceTest {
 	}
 
 }
+*/

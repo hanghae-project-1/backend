@@ -8,14 +8,14 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class OrderException extends RuntimeException {
+public class OrderException extends RuntimeException{
 
-	Error error;
-	HttpStatus httpStatus;
+    Error error;
 
-	public OrderException(Error error, HttpStatus httpStatus) {
-		this.error = error;
-		this.httpStatus = httpStatus;
-	}
+    HttpStatus httpStatus;
 
+    public OrderException(Error error, HttpStatus httpStatus) {
+        this.error = error;
+        this.httpStatus = httpStatus;
+    }
 }
