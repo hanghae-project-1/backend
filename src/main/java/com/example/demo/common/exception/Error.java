@@ -9,6 +9,7 @@ import lombok.Getter;
  * *?** : 조회(GET), 추가(POST), 수정(PATCH,PUT), 삭제(DELETE) HTTP Method에 해당하는 오류
  * **?? : 순서대로 기입
  * ------------------------------------
+ * 0 : token Service
  * 1 : User Service
  * 2 : Menu Service
  * 3 : Store Service
@@ -28,6 +29,7 @@ public enum Error {
 
 	DUPLICATE_USERNAME_EXISTS(1000, "중복된 사용자 ID가 있습니다."),
 	NOT_FOUND_URI(1001, "해당 하는 URI는 없습니다."),
+	NOT_FOUND_USER(1002, "해당 하는 USER가 없습니다."),
 
 	DUPLICATE_STORE_NAME(3001, "동일한 지역 내에 중복된 음식점 이름입니다."),
 	NOT_FOUND_STORE(3002, "해당 음식점을 찾을 수 없습니다."),

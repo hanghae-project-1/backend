@@ -5,11 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.Collections;
 
 @Entity
 @Getter
@@ -18,7 +13,7 @@ import java.util.Collections;
 @AllArgsConstructor
 @Table(name = "p_user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity {
 
 	@Id
 	String username;
@@ -28,10 +23,5 @@ public class User extends BaseEntity implements UserDetails {
 
 	@Enumerated(EnumType.STRING)
 	Role role;
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.emptyList();
-	}
 
 }
