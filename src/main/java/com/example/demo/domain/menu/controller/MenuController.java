@@ -29,4 +29,14 @@ public class MenuController implements MenuControllerDocs {
                 .build();
 
     }
+
+    @PatchMapping("/store/{storeId}/menu/{menuId}")
+    public Response<Void> modifyMenu(@PathVariable UUID storeId, @PathVariable UUID menuId, @RequestBody MenuRequestDto requestDto){
+
+        menuService.modifyMenu(storeId, menuId, requestDto);
+
+        return Response.<Void>builder()
+                .build();
+    }
+
 }

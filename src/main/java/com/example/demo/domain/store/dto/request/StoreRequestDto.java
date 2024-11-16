@@ -12,6 +12,7 @@ public record StoreRequestDto(
         @NotBlank(message = "음식점 이름을 입력해주세요.")
         String name,
 
+        @NotBlank(message = "음식점 OWNER 를 입력해주세요.")
         String ownerName,
 
         @NotBlank(message = "음식점 전화번호를 입력해주세요.")

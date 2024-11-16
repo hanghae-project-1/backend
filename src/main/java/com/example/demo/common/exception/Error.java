@@ -32,6 +32,7 @@ public enum Error {
 	NOT_FOUND_USER(1002, "해당 하는 USER가 없습니다."),
 
 	DUPLICATE_MENU_NAME(2001, "동일한 메뉴가 있습니다."),
+	NOT_FOUND_MENU(2002, "해당 메뉴를 찾을 수 없습니다."),
 
 	DUPLICATE_STORE_NAME(3001, "동일한 지역 내에 중복된 음식점 이름입니다."),
 	NOT_FOUND_STORE(3002, "해당 음식점을 찾을 수 없습니다."),

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -27,4 +28,12 @@ public interface MenuControllerDocs {
     @PostMapping("/api/v1/store/{storeId}/menu")
     Response<Void> createMenu(@Valid @PathVariable UUID storeId, @RequestBody MenuRequestDto requestDto);
 
+    @Operation(summary = "메뉴 수정", description = "메뉴 ID 를 통해 메뉴를 수정하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "메뉴 수정 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "메뉴를 취소할 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "메뉴를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PatchMapping("/api/v1/store/{storeId}/menu/{menuId}")
+    Response<Void> modifyMenu(@PathVariable UUID storeId, @PathVariable UUID menuId, @RequestBody MenuRequestDto requestDto);
 }

@@ -29,6 +29,7 @@ public class Store extends BaseEntity {
 	@NotNull
 	String name;
 
+	@NotNull
 	String ownerName;
 
 	@NotNull
