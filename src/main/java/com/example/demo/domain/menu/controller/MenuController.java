@@ -39,4 +39,13 @@ public class MenuController implements MenuControllerDocs {
                 .build();
     }
 
+    @DeleteMapping("/store/{storeId}/menu/{menuId}")
+    public Response<Void> deleteMenu(@PathVariable UUID storeId, @PathVariable UUID menuId){
+
+        menuService.deleteMenu(storeId, menuId);
+
+        return Response.<Void>builder()
+                .build();
+    }
+
 }

@@ -3,6 +3,7 @@ package com.example.demo.domain.menu.service;
 import com.example.demo.domain.menu.dto.request.MenuRequestDto;
 import com.example.demo.domain.menu.entity.Menu;
 import com.example.demo.domain.menu.exception.DuplicateMenuException;
+import com.example.demo.domain.menu.exception.NotFoundMenuAndStoreException;
 import com.example.demo.domain.menu.exception.NotFoundMenuException;
 import com.example.demo.domain.menu.mapper.MenuMapper;
 import com.example.demo.domain.menu.repository.MenuRepository;
@@ -26,7 +27,7 @@ public class MenuService {
     @Transactional
     public void createMenu(UUID storeId, MenuRequestDto requestDto) {
 
-        Store store = storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
+        Store store = getStore(storeId);
         checkDuplicateMenu(requestDto.name());
         Menu menu = menuMapper.toMenuEntity(requestDto, store);
         menuRepository.save(menu);
@@ -36,10 +37,22 @@ public class MenuService {
     @Transactional
     public void modifyMenu(UUID storeId, UUID menuId, MenuRequestDto requestDto) {
 
-        Store store = storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
+        Store store = getStore(storeId);
         Menu menu = menuRepository.findById(menuId).orElseThrow(NotFoundMenuException::new);
         checkDuplicateMenu(requestDto.name());
         menu.updateMenu(requestDto, store);
+    }
+
+    @Transactional
+    public void deleteMenu(UUID storeId, UUID menuId) {
+
+        Menu menu = menuRepository.findByIdAndStoreId(menuId, storeId).orElseThrow(NotFoundMenuAndStoreException::new);
+        menu.markAsDelete();
+
+    }
+
+    private Store getStore(UUID storeId) {
+        return storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
     }
 
     private void checkDuplicateMenu(String name) {
@@ -48,4 +61,6 @@ public class MenuService {
             throw new DuplicateMenuException();
         }
     }
+
+
 }

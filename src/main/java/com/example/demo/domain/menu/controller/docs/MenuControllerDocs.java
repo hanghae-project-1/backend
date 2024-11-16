@@ -2,7 +2,6 @@ package com.example.demo.domain.menu.controller.docs;
 
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.menu.dto.request.MenuRequestDto;
-import com.example.demo.domain.store.dto.request.StoreRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,4 +36,13 @@ public interface MenuControllerDocs {
     })
     @PatchMapping("/api/v1/store/{storeId}/menu/{menuId}")
     Response<Void> modifyMenu(@PathVariable UUID storeId, @PathVariable UUID menuId, @RequestBody MenuRequestDto requestDto);
+
+    @Operation(summary = "메뉴 삭제", description = "메뉴를 삭제하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "메뉴 삭제 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "메뉴 삭제 실패", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "메뉴를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @DeleteMapping("/api/v1/store/{storeId}/menu/{menuId}")
+    Response<Void> deleteMenu(@PathVariable UUID storeId, @PathVariable UUID menuId);
 }

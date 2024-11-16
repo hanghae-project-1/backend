@@ -33,6 +33,7 @@ public enum Error {
 
 	DUPLICATE_MENU_NAME(2001, "동일한 메뉴가 있습니다."),
 	NOT_FOUND_MENU(2002, "해당 메뉴를 찾을 수 없습니다."),
+	NOT_FOUND_MENU_STORE(2003, "해당 메뉴와 음식점을 찾을 수 없습니다."),
 
 	DUPLICATE_STORE_NAME(3001, "동일한 지역 내에 중복된 음식점 이름입니다."),
 	NOT_FOUND_STORE(3002, "해당 음식점을 찾을 수 없습니다."),
