@@ -54,7 +54,6 @@ public class CategoryMenuService {
         CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
 
         categoryMenu.markAsDelete();
-        categoryMenuRepository.delete(categoryMenu);
     }
 
     private CategoryMenu getCategoryMenu(UUID categoryMenuId) {
