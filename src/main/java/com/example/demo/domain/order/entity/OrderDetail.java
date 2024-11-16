@@ -1,7 +1,7 @@
 package com.example.demo.domain.order.entity;
 
 import com.example.demo.common.entity.BaseEntity;
-import com.example.demo.domain.entity.Menu;
+import com.example.demo.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

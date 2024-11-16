@@ -24,7 +24,7 @@ public interface StoreControllerDocs {
             @ApiResponse(responseCode = "201", description = "음식점 생성 성공", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "400", description = "음식점 생성 실패.", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PostMapping("/api/v1/store/create/q")
+    @PostMapping("/api/v1/store/create")
     Response<Void> createStore(@Valid @RequestBody StoreRequestDto request);
 
     @Operation(summary = "음식점 검색", description = "음식점을 검색하는 API 입니다.")

@@ -1,0 +1,30 @@
+package com.example.demo.domain.menu.controller.docs;
+
+import com.example.demo.common.model.response.Response;
+import com.example.demo.domain.menu.dto.request.MenuRequestDto;
+import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.UUID;
+
+@Tag(name = "Menu", description = "메뉴 등록, 조회, 수정, 삭제 관련 사용자 API")
+public interface MenuControllerDocs {
+
+    @Operation(summary = "메뉴 생성", description = "음식점 ID 를 통해 메뉴를 생성하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "메뉴 생성 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "메뉴 생성 실패.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PostMapping("/api/v1/store/{storeId}/menu")
+    Response<Void> createMenu(@Valid @PathVariable UUID storeId, @RequestBody MenuRequestDto requestDto);
+
+}
