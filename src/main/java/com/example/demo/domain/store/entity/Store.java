@@ -29,6 +29,8 @@ public class Store extends BaseEntity {
 	@NotNull
 	String name;
 
+	String ownerName;
+
 	@NotNull
 	@Pattern(regexp = CommonConstant.RegExp.PHONE)
 	String phone;
