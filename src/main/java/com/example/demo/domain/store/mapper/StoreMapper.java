@@ -13,6 +13,7 @@ public class StoreMapper {
     public Store toStoreEntity(StoreRequestDto requestDto) {
         return Store.builder()
                 .name(requestDto.name())
+                .ownerName(requestDto.ownerName())
                 .phone(requestDto.phone())
                 .address(requestDto.address())
                 .categoryMenu(CategoryMenu.builder().id(requestDto.categoryMenuId()).build())

@@ -74,8 +74,6 @@ public class StoreService {
         Store store = getStore(storeId);
         store.markAsDelete();
 
-        storeRepository.delete(store);
-
     }
 
     private Store getStore(UUID storeId) {

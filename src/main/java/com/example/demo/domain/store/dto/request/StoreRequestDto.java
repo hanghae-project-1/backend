@@ -12,6 +12,9 @@ public record StoreRequestDto(
         @NotBlank(message = "음식점 이름을 입력해주세요.")
         String name,
 
+        @NotBlank(message = "음식점 OWNER 를 입력해주세요.")
+        String ownerName,
+
         @NotBlank(message = "음식점 전화번호를 입력해주세요.")
         @Pattern(regexp = CommonConstant.RegExp.PHONE, message = "유효한 전화번호 형식이 아닙니다. 예) 000-0000-0000")
         String phone,
