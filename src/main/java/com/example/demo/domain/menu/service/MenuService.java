@@ -1,6 +1,7 @@
 package com.example.demo.domain.menu.service;
 
 import com.example.demo.domain.menu.dto.request.MenuRequestDto;
+import com.example.demo.domain.menu.dto.response.MenuResponseDto;
 import com.example.demo.domain.menu.entity.Menu;
 import com.example.demo.domain.menu.exception.DuplicateMenuException;
 import com.example.demo.domain.menu.exception.NotFoundMenuAndStoreException;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -31,6 +33,14 @@ public class MenuService {
         checkDuplicateMenu(requestDto.name());
         Menu menu = menuMapper.toMenuEntity(requestDto, store);
         menuRepository.save(menu);
+
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuResponseDto> getAllMenu(UUID storeId) {
+        List<Menu> menuList = menuRepository.findByStoreId(storeId);
+
+        return menuList.stream().map(menuMapper::toMenuResponseDto).toList();
 
     }
 
@@ -61,6 +71,5 @@ public class MenuService {
             throw new DuplicateMenuException();
         }
     }
-
 
 }

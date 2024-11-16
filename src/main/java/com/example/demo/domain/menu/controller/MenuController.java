@@ -3,12 +3,14 @@ package com.example.demo.domain.menu.controller;
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.menu.controller.docs.MenuControllerDocs;
 import com.example.demo.domain.menu.dto.request.MenuRequestDto;
+import com.example.demo.domain.menu.dto.response.MenuResponseDto;
 import com.example.demo.domain.menu.service.MenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +31,14 @@ public class MenuController implements MenuControllerDocs {
                 .build();
 
     }
+
+    @GetMapping("/store/{storeId}/menu")
+    public Response<List<MenuResponseDto>> getAllMenu(@PathVariable UUID storeId){
+        return Response.<List<MenuResponseDto>>builder()
+                .data(menuService.getAllMenu(storeId))
+                .build();
+    }
+
 
     @PatchMapping("/store/{storeId}/menu/{menuId}")
     public Response<Void> modifyMenu(@PathVariable UUID storeId, @PathVariable UUID menuId, @RequestBody MenuRequestDto requestDto){
