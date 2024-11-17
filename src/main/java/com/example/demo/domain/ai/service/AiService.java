@@ -3,8 +3,11 @@ package com.example.demo.domain.ai.service;
 import com.example.demo.domain.ai.dto.request.AiRequestDto;
 import com.example.demo.domain.ai.dto.response.AiResponseDto;
 import com.example.demo.domain.ai.entity.Ai;
+import com.example.demo.domain.ai.exception.NotFoundAiException;
 import com.example.demo.domain.ai.mapper.AiMapper;
 import com.example.demo.domain.ai.repository.AiRepository;
+import com.example.demo.domain.user.common.exception.OwnerMismatchException;
+import com.example.demo.domain.user.common.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -17,10 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AiService {
@@ -29,12 +29,14 @@ public class AiService {
     private String geminiApikey;
 
     private final RestTemplate restTemplate;
+    private final UserService userService;
     private final AiMapper aiMapper;
     private final AiRepository aiRepository;
 
     @Autowired
-    public AiService(RestTemplateBuilder restTemplateBuilder, AiMapper aiMapper, AiRepository aiRepository) {
+    public AiService(RestTemplateBuilder restTemplateBuilder, UserService userService, AiMapper aiMapper, AiRepository aiRepository) {
         this.restTemplate = restTemplateBuilder.build();
+        this.userService = userService;
         this.aiMapper = aiMapper;
         this.aiRepository = aiRepository;
     }
@@ -91,8 +93,22 @@ public class AiService {
     public List<AiResponseDto> getAllAi(String ownerName) {
 
         List<Ai> aiList = aiRepository.findAllByOwnerName(ownerName);
-
+        checkOwner(ownerName);
         return aiList.stream().map(aiMapper::toAiResponseDto).toList();
 
+    }
+
+    @Transactional
+    public void deleteAi(UUID aiId, String ownerName) {
+
+        Ai ai = aiRepository.findById(aiId).orElseThrow(NotFoundAiException::new);
+        checkOwner(ownerName);
+        ai.markAsDelete();
+    }
+
+    private void checkOwner(String ownerName) {
+        if (!ownerName.equals(userService.getCurrentUsername())) {
+            throw new OwnerMismatchException();
+        }
     }
 }

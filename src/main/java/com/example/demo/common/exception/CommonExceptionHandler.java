@@ -2,7 +2,10 @@ package com.example.demo.common.exception;
 
 import java.util.Objects;
 
+import com.example.demo.domain.ai.exception.AiException;
+import com.example.demo.domain.category.exception.CategoryMenuException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -88,5 +91,17 @@ public class CommonExceptionHandler {
 			.code(error.getCode())
 			.message(error.getMessage())
 			.build();
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(UserException.class)
+	public Response<Void> AiExceptionHandler(AiException e) {
+
+		Error error = e.getError();
+
+		return Response.<Void>builder()
+				.code(error.getCode())
+				.message(error.getMessage())
+				.build();
 	}
 }

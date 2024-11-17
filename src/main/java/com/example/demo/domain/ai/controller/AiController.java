@@ -10,6 +10,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +34,15 @@ public class AiController {
     public Response<List<AiResponseDto>> getAllAi(@RequestParam("ownerName") String ownerName) {
         return Response.<List<AiResponseDto>>builder()
                 .data(aiService.getAllAi(ownerName))
+                .build();
+    }
+
+    @DeleteMapping("/{aiId}")
+    public Response<Void> deleteAi(@PathVariable UUID aiId, @RequestParam(required = true) String ownerName){
+
+        aiService.deleteAi(aiId, ownerName);
+
+        return Response.<Void>builder()
                 .build();
     }
 

@@ -30,6 +30,7 @@ public enum Error {
 	DUPLICATE_USERNAME_EXISTS(1000, "중복된 사용자 ID가 있습니다."),
 	NOT_FOUND_URI(1001, "해당 하는 URI는 없습니다."),
 	NOT_FOUND_USER(1002, "해당 하는 USER가 없습니다."),
+	OWNER_MISMATCH(1003, "로그인한 OWNER 와 작성자 OWNER가 일치하지 않습니다."),
 
 	DUPLICATE_MENU_NAME(2001, "동일한 메뉴가 있습니다."),
 	NOT_FOUND_MENU(2002, "해당 메뉴를 찾을 수 없습니다."),
@@ -37,6 +38,8 @@ public enum Error {
 
 	DUPLICATE_STORE_NAME(3001, "동일한 지역 내에 중복된 음식점 이름입니다."),
 	NOT_FOUND_STORE(3002, "해당 음식점을 찾을 수 없습니다."),
+
+	NOT_FOUND_AI(4001, "해당 AI 답변을 찾을 수 없습니다."),
 
 	NOT_FOUND_ORDER(5000, "해당 주문을 찾을 수 없습니다."),
 	RETURN_PERIOD_PASSED(5001, "주문을 취소할 수 없습니다."),
