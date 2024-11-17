@@ -12,9 +12,9 @@ public record StoreResponseDto(
 
         String address,
 
-        UUID categoryMenuId,
+        String categoryMenuName,
 
-        UUID regionId
+        String district
 
 ) {
 }

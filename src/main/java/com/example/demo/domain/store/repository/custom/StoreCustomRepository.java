@@ -8,4 +8,6 @@ import java.util.UUID;
 public interface StoreCustomRepository {
 
     List<Store> searchByFilters(UUID categoryId, UUID regionId);
+
+    List<Store> searchStoreByOwner(String ownerName, String keyWord);
 }

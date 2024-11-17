@@ -27,6 +27,17 @@ public interface StoreControllerDocs {
     @PostMapping("/api/v1/store/create")
     Response<Void> createStore(@Valid @RequestBody StoreRequestDto request);
 
+    @Operation(summary = "Owner 별 음식점 조회 및 키워드 검색", description = "Owner 별 음식점을 조회하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "음식점 조회 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "음식점 조회 실패.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping
+    Response<List<StoreResponseDto>> ownerStores(
+            @RequestParam String ownerName,
+            @RequestParam(required = false) String keyWord
+    );
+
     @Operation(summary = "음식점 검색", description = "음식점을 검색하는 API 입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식점 검색 성공", content = @Content(schema = @Schema(implementation = Response.class))),

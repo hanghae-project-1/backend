@@ -32,6 +32,16 @@ public class StoreController implements StoreControllerDocs{
 
     }
 
+    @GetMapping
+    public Response<List<StoreResponseDto>> ownerStores(
+            @RequestParam String ownerName,
+            @RequestParam(required = false) String keyWord
+    ){
+        return Response.<List<StoreResponseDto>>builder()
+                .data(storeService.ownerStore(ownerName, keyWord))
+                .build();
+    }
+
     @GetMapping("/search")
     public Response<List<StoreResponseDto>> searchStores(
             @RequestParam(required = false) UUID categoryId,

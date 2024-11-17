@@ -39,6 +39,13 @@ public class StoreService {
 
     }
 
+    public List<StoreResponseDto> ownerStore(String ownerName, String keyWord) {
+
+        List<Store> storeList = storeRepository.searchStoreByOwner(ownerName, keyWord);
+
+        return storeList.stream().map(storeMapper::toStoreResponseDto).toList();
+
+    }
 
     public List<StoreResponseDto> searchStores(UUID categoryId, UUID regionId) {
 
@@ -50,7 +57,7 @@ public class StoreService {
 
     @Transactional
     public void modifyStore(UUID storeId, StoreRequestDto requestDto) {
-        
+
         Store store = getStore(storeId);
 
         Region region = store.getRegion();

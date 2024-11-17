@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.example.demo.domain.ai.exception.AiException;
 import com.example.demo.domain.category.exception.CategoryMenuException;
+import com.example.demo.domain.store.exception.StoreException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -94,8 +95,20 @@ public class CommonExceptionHandler {
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(UserException.class)
+	@ExceptionHandler(AiException.class)
 	public Response<Void> AiExceptionHandler(AiException e) {
+
+		Error error = e.getError();
+
+		return Response.<Void>builder()
+				.code(error.getCode())
+				.message(error.getMessage())
+				.build();
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(StoreException.class)
+	public Response<Void> StoreExceptionHandler(StoreException e) {
 
 		Error error = e.getError();
 

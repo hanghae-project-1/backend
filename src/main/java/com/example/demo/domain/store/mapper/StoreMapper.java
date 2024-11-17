@@ -28,8 +28,8 @@ public class StoreMapper {
                 store.getName(),
                 store.getPhone(),
                 store.getAddress(),
-                store.getCategoryMenu().getId(),
-                store.getRegion().getId()
+                store.getCategoryMenu().getName(),
+                store.getRegion().getDistrict()
         );
     }
 

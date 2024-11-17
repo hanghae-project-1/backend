@@ -4,6 +4,7 @@ import com.example.demo.domain.store.entity.QStore;
 import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.store.repository.custom.StoreCustomRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -41,6 +42,20 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository {
                 .where(builder)
                 .fetch();
 
+    }
+
+    public List<Store> searchStoreByOwner(String ownerName, String keyWord){
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (keyWord != null){
+            builder.and(store.name.contains(keyWord));
+        }
+
+        return queryFactory
+                .selectFrom(store)
+                .where(store.ownerName.eq(ownerName).and(builder))
+                .fetch();
     }
 
 }
