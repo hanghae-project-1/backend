@@ -17,5 +17,11 @@ public class AiMapper {
                 .build();
     }
 
+    public AiResponseDto toAiResponseDto(Ai ai){
+        return new AiResponseDto(
+                ai.getRequestText(),
+                ai.getResponseText()
+        );
+    }
 
 }

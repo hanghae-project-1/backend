@@ -2,7 +2,7 @@ package com.example.demo.domain.ai.controller.docs;
 
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.ai.dto.request.AiRequestDto;
-import com.example.demo.domain.category.dto.response.CategoryMenuResponseDto;
+import com.example.demo.domain.ai.dto.response.AiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,5 +27,11 @@ public interface AiControllerDocs {
     @PostMapping("/api/v1/ai/create")
     Response<String> createAi(@Valid @RequestBody AiRequestDto requestDto);
 
+    @Operation(summary = "ai 전체 조회", description = "ai 전체를 조회하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ai 전체 조회 성공", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping("/api/v1/ai")
+    Response<List<AiResponseDto>> getAllAi();
 
 }

@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 public record AiResponseDto(
 
         @NotBlank
+        String requestText,
+
+        @NotBlank
         String responseText
 
 ) {

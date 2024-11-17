@@ -12,6 +12,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -38,6 +39,7 @@ public class AiService {
         this.aiRepository = aiRepository;
     }
 
+    @Transactional
     public String createAi(AiRequestDto requestDto) throws JSONException {
 
         URI uri = uriBuilder();
@@ -83,5 +85,14 @@ public class AiService {
                 .encode()
                 .build()
                 .toUri();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AiResponseDto> getAllAi(String ownerName) {
+
+        List<Ai> aiList = aiRepository.findAllByOwnerName(ownerName);
+
+        return aiList.stream().map(aiMapper::toAiResponseDto).toList();
+
     }
 }
