@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface MenuRepository extends JpaRepository<Menu, UUID> {
-    boolean existsByName(String name);
-
     Optional<Menu> findByIdAndStoreId(UUID menuId, UUID storeId);
 
     List<Menu> findByStoreId(UUID storeId);
+
+    boolean existsByStoreIdAndName(UUID storeId, String name);
 
 }

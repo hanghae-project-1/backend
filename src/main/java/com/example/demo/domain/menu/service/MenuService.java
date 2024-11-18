@@ -30,7 +30,7 @@ public class MenuService {
     public void createMenu(UUID storeId, MenuRequestDto requestDto) {
 
         Store store = getStore(storeId);
-        checkDuplicateMenu(requestDto.name());
+        checkDuplicateMenu(storeId, requestDto.name());
         Menu menu = menuMapper.toMenuEntity(requestDto, store);
         menuRepository.save(menu);
 
@@ -49,7 +49,7 @@ public class MenuService {
 
         Store store = getStore(storeId);
         Menu menu = menuRepository.findById(menuId).orElseThrow(NotFoundMenuException::new);
-        checkDuplicateMenu(requestDto.name());
+        checkDuplicateMenu(storeId, requestDto.name());
         menu.updateMenu(requestDto, store);
     }
 
@@ -65,8 +65,8 @@ public class MenuService {
         return storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
     }
 
-    private void checkDuplicateMenu(String name) {
-        boolean menuExists = menuRepository.existsByName(name);
+    private void checkDuplicateMenu(UUID storeId, String name) {
+        boolean menuExists = menuRepository.existsByStoreIdAndName(storeId, name);
         if(menuExists){
             throw new DuplicateMenuException();
         }
