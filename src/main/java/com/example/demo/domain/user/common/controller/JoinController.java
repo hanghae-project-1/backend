@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.common.model.response.Response;
@@ -22,6 +23,7 @@ public class JoinController implements JoinControllerDocs {
 	private final JoinService joinService;
 
 	@PostMapping("/join")
+	@ResponseStatus(HttpStatus.CREATED)
 	public Response<Void> joinProcess(@Valid JoinRequestDto dto) {
 		joinService.joinProcess(dto);
 		return Response.<Void>builder()
@@ -31,6 +33,7 @@ public class JoinController implements JoinControllerDocs {
 	}
 
 	@PostMapping("/{role:owner|manager|master}/join")
+	@ResponseStatus(HttpStatus.CREATED)
 	public Response<Void> joinProcess(
 		@Valid JoinRequestDto dto, @PathVariable String role) {
 		joinService.joinProcess(dto, role);
