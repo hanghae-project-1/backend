@@ -32,7 +32,7 @@ public class OrderDetail extends BaseEntity {
 	@JoinColumn(name = "order_id")
 	Order order;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "menu_id")
 	Menu menu;
 
