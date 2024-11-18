@@ -70,7 +70,7 @@
 </br>
 
 ## 실행방법 
-- 배포 화면 URL: 18.234.161.55
+- 배포 화면 URL: http://18.234.161.55:8080/
 
 
 </br>
@@ -336,4 +336,4 @@
 </details>
 
 ## API 문서 
-- [URL](18.234.161.55/swagger-ui/index.html)
+- [URL](18.234.161.55:8080/swagger-ui/index.html)
