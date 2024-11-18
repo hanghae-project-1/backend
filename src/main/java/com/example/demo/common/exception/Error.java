@@ -40,6 +40,7 @@ public enum Error {
 
 	DUPLICATE_STORE_NAME(3001, "동일한 지역 내에 중복된 음식점 이름입니다."),
 	NOT_FOUND_STORE(3002, "해당 음식점을 찾을 수 없습니다."),
+	IS_NOT_YOUR_STORE(3003, "본인의 음식점만 조회할 수 있습니다."),
 
 	NOT_FOUND_AI(4001, "해당 AI 답변을 찾을 수 없습니다."),
 
