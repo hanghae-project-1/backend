@@ -29,7 +29,9 @@ public interface JoinControllerDocs {
 		@ApiResponse(responseCode = "201", description = "회원가입 성공", content = @Content(schema = @Schema(implementation = Response.class))),
 		@ApiResponse(responseCode = "400", description = "회원가입 실패", content = @Content(schema = @Schema(implementation = Response.class)))
 	})
-	@PostMapping("/api/v1/{role}/join")
+	@PostMapping({ "/owner/join",
+				"/manager/join",
+				"/master/join"})
 	Response<Void> joinProcess(@Valid JoinRequestDto dto, @PathVariable String role);
 
 }
