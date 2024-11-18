@@ -4,17 +4,15 @@ import com.example.demo.domain.entity.common.Status;
 
 public record MenuResponseDto(
 
-        String name,
+		String name,
 
-        String content,
+		String content,
 
-        Integer price,
+		Integer price,
 
-        Boolean stockStatus,
+		Boolean stockStatus,
 
-        String imageUrl,
-
-        Status.Classification classification
+		Status.Classification classification
 
 ) {
 }

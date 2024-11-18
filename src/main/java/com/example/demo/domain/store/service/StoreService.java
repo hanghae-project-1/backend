@@ -10,6 +10,7 @@ import com.example.demo.domain.region.exception.NotFoundRegionException;
 import com.example.demo.domain.region.repository.RegionRepository;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
 import com.example.demo.domain.store.dto.response.StoreDetailResponseDto;
+import com.example.demo.domain.store.dto.response.StoreListResponseDto;
 import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.store.exception.DuplicateStoreNameException;
@@ -18,6 +19,7 @@ import com.example.demo.domain.store.mapper.StoreMapper;
 import com.example.demo.domain.store.repository.StoreRepository;
 import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +54,14 @@ public class StoreService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<StoreResponseDto> searchStores(UUID categoryId, UUID regionId) {
+	public StoreListResponseDto searchStores(UUID categoryId, UUID regionId, Pageable pageable) {
 
-		return storeRepository.searchByFilters(categoryId, regionId);
+		List<StoreResponseDto> storeResponseList = storeRepository.searchByFilters(categoryId, regionId, pageable);
+		
+		return new StoreListResponseDto(
+				storeResponseList.size(),
+				storeResponseList
+		);
 	}
 
 	@Transactional(readOnly = true)

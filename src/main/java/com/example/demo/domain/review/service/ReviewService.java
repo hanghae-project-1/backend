@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.UUID;
 
+import static com.example.demo.common.util.PagingUtils.setDefaultSort;
 import static com.example.demo.domain.entity.common.Status.Order.ORDER_COMPLETED;
 
 @Service
@@ -81,6 +82,10 @@ public class ReviewService {
 	@Transactional(readOnly = true)
 	public ReviewListResponseDTO getUserReviewList(String userId, Pageable pageable) {
 
+		if (pageable.getSort().isEmpty()) {
+			pageable = setDefaultSort(pageable);
+		}
+
 		Page<Review> userReviewList = reviewRepository.findAllByCreatedBy(userId, pageable);
 
 		return new ReviewListResponseDTO(
@@ -91,6 +96,10 @@ public class ReviewService {
 
 	@Transactional(readOnly = true)
 	public ReviewListResponseDTO getStoreReviewList(UUID storeId, Pageable pageable) {
+
+		if (pageable.getSort().isEmpty()) {
+			pageable = setDefaultSort(pageable);
+		}
 
 		Page<Review> storeReviewList = reviewRepository.findAllByIsDeleteTrueAndIsPublicFalseAndOrderStoreId(storeId, pageable);
 

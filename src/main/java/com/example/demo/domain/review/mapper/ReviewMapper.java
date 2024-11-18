@@ -21,8 +21,7 @@ public class ReviewMapper {
 	public ReviewResponseDTO toReviewResponseDTO(Review review) {
 		return new ReviewResponseDTO(
 				review.getContent(),
-				review.getRating(),
-				review.getImageUrl()
+				review.getRating()
 		);
 	}
 }
