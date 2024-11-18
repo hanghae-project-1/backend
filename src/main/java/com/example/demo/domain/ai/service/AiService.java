@@ -22,7 +22,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.*;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AiService {
 
     @Value("${gemini.api.key}")
@@ -33,13 +36,6 @@ public class AiService {
     private final AiMapper aiMapper;
     private final AiRepository aiRepository;
 
-    @Autowired
-    public AiService(RestTemplateBuilder restTemplateBuilder, UserService userService, AiMapper aiMapper, AiRepository aiRepository) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.userService = userService;
-        this.aiMapper = aiMapper;
-        this.aiRepository = aiRepository;
-    }
 
     @Transactional
     public String createAi(AiRequestDto requestDto) throws JSONException {

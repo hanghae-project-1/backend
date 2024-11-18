@@ -94,7 +94,7 @@ public class CommonExceptionHandler {
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(UserException.class)
+	@ExceptionHandler(AiException.class)
 	public Response<Void> AiExceptionHandler(AiException e) {
 
 		Error error = e.getError();
