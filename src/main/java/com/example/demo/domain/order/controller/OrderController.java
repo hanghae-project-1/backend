@@ -9,6 +9,7 @@ import com.example.demo.domain.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class OrderController implements OrderControllerDocs {
 	private final OrderService orderService;
 
 	@PostMapping
+	@PreAuthorize("hasRole('CUSTOMER')")
 	public Response<Void> createOrder(@Valid @RequestBody OrderRequestDTO request) {
 
 		orderService.createOrder(request);
@@ -34,6 +36,7 @@ public class OrderController implements OrderControllerDocs {
 	}
 
 	@PatchMapping("/{orderId}")
+	@PreAuthorize("hasAnyRole('CUSTOMER', 'MANAGER', 'MASTER')")
 	public Response<Void> modifyOrderStatus(@PathVariable UUID orderId, @RequestParam Boolean isCancel) {
 
 		orderService.modifyOrderStatus(orderId, isCancel);
@@ -43,6 +46,7 @@ public class OrderController implements OrderControllerDocs {
 	}
 
 	@GetMapping("/{orderId}")
+	@PreAuthorize("hasAnyRole('CUSTOMER', 'MANAGER', 'MASTER')")
 	public Response<OrderResponseDTO> getOrderDetails(@PathVariable UUID orderId) {
 
 		return Response.<OrderResponseDTO>builder()
@@ -51,6 +55,7 @@ public class OrderController implements OrderControllerDocs {
 	}
 
 	@GetMapping("/user")
+	@PreAuthorize("hasAnyRole('CUSTOMER', 'MANAGER', 'MASTER')")
 	public Response<List<OrderResponseDTO>> getAllOrdersByCustomer() {
 
 		return Response.<List<OrderResponseDTO>>builder()
@@ -59,6 +64,7 @@ public class OrderController implements OrderControllerDocs {
 	}
 
 	@GetMapping("/store/{storeId}")
+	@PreAuthorize("hasAnyRole('OWNER', 'MANAGER', 'MASTER')")
 	public Response<StoreOrderResponseDTO> getAllOrdersByStore(@PathVariable UUID storeId,
 	                                                           @RequestBody LocalDateTime startDate,
 	                                                           @RequestBody LocalDateTime endDate) {
