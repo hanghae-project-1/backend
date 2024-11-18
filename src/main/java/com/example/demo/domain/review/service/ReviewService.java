@@ -15,6 +15,7 @@ import com.example.demo.domain.review.repository.ReviewRepository;
 import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.store.exception.NotFoundStoreException;
 import com.example.demo.domain.store.repository.StoreRepository;
+import com.example.demo.domain.user.common.exception.UserException;
 import com.example.demo.domain.user.common.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +87,21 @@ public class ReviewService {
 			pageable = setDefaultSort(pageable);
 		}
 
-		Page<Review> userReviewList = reviewRepository.findAllByCreatedBy(userId, pageable);
+		Page<Review> userReviewList = Page.empty();
+
+		try {
+			String currentUserRole = userService.getCurrentUserRole();
+
+			if (currentUserRole.equals("ROLE_MANAGER") || currentUserRole.equals("ROLE_MASTER")) {
+				userReviewList = reviewRepository.findAllByCreatedAt(userId, pageable);
+			}
+		} catch (UserException ignored) {
+
+		} finally {
+			if (userReviewList.isEmpty()) {
+				userReviewList = reviewRepository.findAllByCreatedAtAndIsDeleteFalseAndIsPublicTrue(userId, pageable);
+			}
+		}
 
 		return new ReviewListResponseDTO(
 				userReviewList.getNumberOfElements(),

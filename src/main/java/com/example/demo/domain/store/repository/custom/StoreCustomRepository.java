@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface StoreCustomRepository {
 
-	List<StoreResponseDto> searchByFilters(UUID categoryId, UUID regionId, Pageable pageable);
+	List<StoreResponseDto> searchByFilters(UUID categoryId, UUID regionId, Boolean isManager, Pageable pageable);
 
 	List<StoreResponseDto> searchStoreByOwner(String ownerName, String keyWord);
 
