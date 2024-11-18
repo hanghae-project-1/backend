@@ -69,7 +69,7 @@ public class ReviewService {
 			validateOrderByUser(review.getOrder().getCreatedBy(), currentUsername);
 			validateReviewByUser(review.getCreatedBy(), currentUsername);
 
-			review.markAsDelete();
+			review.markAsDelete(currentUsername);
 
 			reviewRepository.save(review);
 		}, () -> {

@@ -7,6 +7,7 @@ import com.example.demo.domain.category.exception.DuplicateCategoryMenuException
 import com.example.demo.domain.category.exception.NotFoundCategoryMenuException;
 import com.example.demo.domain.category.mapper.CategoryMenuMapper;
 import com.example.demo.domain.category.repository.CategoryMenuRepository;
+import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,52 +19,53 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CategoryMenuService {
 
-    private final CategoryMenuMapper categoryMenuMapper;
-    private final CategoryMenuRepository categoryMenuRepository;
+	private final CategoryMenuMapper categoryMenuMapper;
+	private final CategoryMenuRepository categoryMenuRepository;
+	private final UserService userService;
 
-    @Transactional
-    public void createCategoryMenu(CategoryMenuRequestDto requestDto) {
+	@Transactional
+	public void createCategoryMenu(CategoryMenuRequestDto requestDto) {
 
-        CategoryMenu categoryMenu = categoryMenuMapper.toCategoryMenuEntity(requestDto);
+		CategoryMenu categoryMenu = categoryMenuMapper.toCategoryMenuEntity(requestDto);
 
-        checkForDuplicateName(requestDto.name());
-        categoryMenuRepository.save(categoryMenu);
+		checkForDuplicateName(requestDto.name());
+		categoryMenuRepository.save(categoryMenu);
 
-    }
+	}
 
-    @Transactional(readOnly = true)
-    public List<CategoryMenuResponseDto> getAllCategoryMenu() {
+	@Transactional(readOnly = true)
+	public List<CategoryMenuResponseDto> getAllCategoryMenu() {
 
-        List<CategoryMenu> categoryMenuList = categoryMenuRepository.findAll();
+		List<CategoryMenu> categoryMenuList = categoryMenuRepository.findAll();
 
-        return categoryMenuList.stream().map(categoryMenuMapper::toCategoryMenuResponseDto).toList();
+		return categoryMenuList.stream().map(categoryMenuMapper::toCategoryMenuResponseDto).toList();
 
-    }
+	}
 
-    @Transactional
-    public void modifyCategoryMenu(UUID categoryMenuId, CategoryMenuRequestDto requestDto) {
-        CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
+	@Transactional
+	public void modifyCategoryMenu(UUID categoryMenuId, CategoryMenuRequestDto requestDto) {
+		CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
 
-        checkForDuplicateName(requestDto.name());
+		checkForDuplicateName(requestDto.name());
 
-        categoryMenu.updateCategoryMenu(requestDto);
-        categoryMenuRepository.save(categoryMenu);
-    }
+		categoryMenu.updateCategoryMenu(requestDto);
+		categoryMenuRepository.save(categoryMenu);
+	}
 
-    public void deleteCategoryMenu(UUID categoryMenuId) {
-        CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
+	public void deleteCategoryMenu(UUID categoryMenuId) {
+		CategoryMenu categoryMenu = getCategoryMenu(categoryMenuId);
 
-        categoryMenu.markAsDelete();
-    }
+		categoryMenu.markAsDelete(userService.getCurrentUsername());
+	}
 
-    private CategoryMenu getCategoryMenu(UUID categoryMenuId) {
-        return categoryMenuRepository.findById(categoryMenuId).orElseThrow(NotFoundCategoryMenuException::new);
-    }
+	private CategoryMenu getCategoryMenu(UUID categoryMenuId) {
+		return categoryMenuRepository.findById(categoryMenuId).orElseThrow(NotFoundCategoryMenuException::new);
+	}
 
-    private void checkForDuplicateName(String name) {
-        boolean exists = categoryMenuRepository.existsByName(name);
-        if(exists){
-            throw new DuplicateCategoryMenuException();
-        }
-    }
+	private void checkForDuplicateName(String name) {
+		boolean exists = categoryMenuRepository.existsByName(name);
+		if (exists) {
+			throw new DuplicateCategoryMenuException();
+		}
+	}
 }

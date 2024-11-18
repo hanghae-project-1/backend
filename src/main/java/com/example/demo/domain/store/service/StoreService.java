@@ -16,6 +16,7 @@ import com.example.demo.domain.store.exception.DuplicateStoreNameException;
 import com.example.demo.domain.store.exception.NotFoundStoreException;
 import com.example.demo.domain.store.mapper.StoreMapper;
 import com.example.demo.domain.store.repository.StoreRepository;
+import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class StoreService {
 
 	private final MenuService menuService;
 	private final StoreMapper storeMapper;
+	private final UserService userService;
 	private final StoreRepository storeRepository;
 	private final CategoryMenuRepository categoryMenuRepository;
 	private final RegionRepository regionRepository;
@@ -89,7 +91,7 @@ public class StoreService {
 	public void deleteStore(UUID storeId) {
 
 		Store store = getStore(storeId);
-		store.markAsDelete();
+		store.markAsDelete(userService.getCurrentUsername());
 
 	}
 

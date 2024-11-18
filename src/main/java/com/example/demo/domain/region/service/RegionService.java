@@ -6,6 +6,7 @@ import com.example.demo.domain.region.entity.Region;
 import com.example.demo.domain.region.exception.NotFoundRegionException;
 import com.example.demo.domain.region.mapper.RegionMapper;
 import com.example.demo.domain.region.repository.RegionRepository;
+import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,39 +18,40 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RegionService {
 
-    private final RegionMapper regionMapper;
-    private final RegionRepository regionRepository;
+	private final UserService userService;
+	private final RegionMapper regionMapper;
+	private final RegionRepository regionRepository;
 
-    @Transactional
-    public void createRegion(RegionRequestDto requestDto) {
-        Region region = regionMapper.toRegionEntity(requestDto);
+	@Transactional
+	public void createRegion(RegionRequestDto requestDto) {
+		Region region = regionMapper.toRegionEntity(requestDto);
 
-        regionRepository.save(region);
+		regionRepository.save(region);
 
-    }
+	}
 
-    @Transactional(readOnly = true)
-    public List<RegionResponseDto> getAllRegion() {
-        List<Region> regionList = regionRepository.findAll();
+	@Transactional(readOnly = true)
+	public List<RegionResponseDto> getAllRegion() {
+		List<Region> regionList = regionRepository.findAll();
 
-        return regionList.stream().map(regionMapper::toRegionResponseDto).toList();
-    }
+		return regionList.stream().map(regionMapper::toRegionResponseDto).toList();
+	}
 
-    public void modifyRegion(UUID regionId, RegionRequestDto requestDto) {
+	public void modifyRegion(UUID regionId, RegionRequestDto requestDto) {
 
-        Region region = getRegion(regionId);
+		Region region = getRegion(regionId);
 
-        region.updateRegion(requestDto);
-        regionRepository.save(region);
-    }
+		region.updateRegion(requestDto);
+		regionRepository.save(region);
+	}
 
-    public void deleteRegion(UUID regionId) {
-        Region region = getRegion(regionId);
+	public void deleteRegion(UUID regionId) {
+		Region region = getRegion(regionId);
 
-        region.markAsDelete();
-    }
+		region.markAsDelete(userService.getCurrentUsername());
+	}
 
-    private Region getRegion(UUID regionId) {
-        return regionRepository.findById(regionId).orElseThrow(NotFoundRegionException::new);
-    }
+	private Region getRegion(UUID regionId) {
+		return regionRepository.findById(regionId).orElseThrow(NotFoundRegionException::new);
+	}
 }

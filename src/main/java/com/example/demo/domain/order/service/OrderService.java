@@ -12,6 +12,8 @@ import com.example.demo.domain.order.model.response.OrderResponseDTO;
 import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import com.example.demo.domain.order.repository.OrderRepository;
 import com.example.demo.domain.store.entity.Store;
+import com.example.demo.domain.store.exception.IsNotYourStoreException;
+import com.example.demo.domain.store.exception.NotFoundStoreException;
 import com.example.demo.domain.store.repository.StoreRepository;
 import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -64,8 +66,7 @@ public class OrderService {
 				throw new ReturnPeriodPassedException();
 			}
 
-			//TODO: (준석) deleteBy 추가하기
-			order.markAsDelete();
+			order.markAsDelete(userService.getCurrentUsername());
 
 		} else {
 
@@ -91,7 +92,6 @@ public class OrderService {
 	@Transactional(readOnly = true)
 	public List<OrderResponseDTO> getAllOrdersByCustomer() {
 
-
 		String currentUsername = userService.getCurrentUsername();
 
 		List<Order> orderList = orderRepository.getOrdersWithFullDetails(currentUsername);
@@ -109,12 +109,12 @@ public class OrderService {
 	public StoreOrderResponseDTO getAllOrdersByStore(UUID storeId, LocalDateTime startDate, LocalDateTime endDate) {
 
 		String currentUsername = userService.getCurrentUsername();
+		String currentUserRole = userService.getCurrentUserRole();
 
-		//TODO: (준석) store 추가되면 repo, exception 수정하기
-		Store store = storeRepository.findById(storeId).orElseThrow();
+		Store store = storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
 
-		if (!store.getCreatedBy().equals(currentUsername)) {
-			throw new IllegalArgumentException();
+		if (currentUserRole.equals("ROLE_OWNER") && !store.getCreatedBy().equals(currentUsername)) {
+			throw new IsNotYourStoreException();
 		}
 
 		List<Order> orderList = orderRepository.findAllByStoreIdAndCreatedAtBetween(storeId, startDate, endDate);
