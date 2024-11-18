@@ -8,6 +8,7 @@ import com.example.demo.domain.category.service.CategoryMenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,43 +19,47 @@ import java.util.UUID;
 @RequestMapping("/api/v1/category-menu")
 public class CategoryMenuController implements CategoryMenuControllerDocs {
 
-    private final CategoryMenuService categoryMenuService;
+	private final CategoryMenuService categoryMenuService;
 
-    @PostMapping
-    public Response<Void> createCategoryMenu(@Valid @RequestBody CategoryMenuRequestDto requestDto) {
+	@PostMapping
+	@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
+	public Response<Void> createCategoryMenu(@Valid @RequestBody CategoryMenuRequestDto requestDto) {
 
-        categoryMenuService.createCategoryMenu(requestDto);
+		categoryMenuService.createCategoryMenu(requestDto);
 
-        return Response.<Void>builder()
-                .code(HttpStatus.CREATED.value())
-                .message(HttpStatus.CREATED.getReasonPhrase())
-                .build();
+		return Response.<Void>builder()
+				.code(HttpStatus.CREATED.value())
+				.message(HttpStatus.CREATED.getReasonPhrase())
+				.build();
 
-    }
+	}
 
-    @GetMapping
-    public Response<List<CategoryMenuResponseDto>> getAllCategoryMenu() {
-        return Response.<List<CategoryMenuResponseDto>>builder()
-                .data(categoryMenuService.getAllCategoryMenu())
-                .build();
-    }
+	@GetMapping
+	@PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
+	public Response<List<CategoryMenuResponseDto>> getAllCategoryMenu() {
+		return Response.<List<CategoryMenuResponseDto>>builder()
+				.data(categoryMenuService.getAllCategoryMenu())
+				.build();
+	}
 
-    @PatchMapping("/{categoryMenuId}")
-    public Response<Void> modifyCategoryMenu(@PathVariable UUID categoryMenuId, @RequestBody CategoryMenuRequestDto requestDto){
+	@PatchMapping("/{categoryMenuId}")
+	@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
+	public Response<Void> modifyCategoryMenu(@PathVariable UUID categoryMenuId, @RequestBody CategoryMenuRequestDto requestDto) {
 
-        categoryMenuService.modifyCategoryMenu(categoryMenuId, requestDto);
+		categoryMenuService.modifyCategoryMenu(categoryMenuId, requestDto);
 
-        return Response.<Void>builder()
-                .build();
-    }
+		return Response.<Void>builder()
+				.build();
+	}
 
-    @DeleteMapping("/{categoryMenuId}")
-    public Response<Void> deleteCategoryMenu(@PathVariable UUID categoryMenuId){
+	@DeleteMapping("/{categoryMenuId}")
+	@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
+	public Response<Void> deleteCategoryMenu(@PathVariable UUID categoryMenuId) {
 
-        categoryMenuService.deleteCategoryMenu(categoryMenuId);
+		categoryMenuService.deleteCategoryMenu(categoryMenuId);
 
-        return Response.<Void>builder()
-                .build();
-    }
+		return Response.<Void>builder()
+				.build();
+	}
 
 }
