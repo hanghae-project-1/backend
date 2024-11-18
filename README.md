@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/c09b6330-51cb-4802-99f3-dc724bca1f89)7조 손흥민
+7조 손흥민
 =============
 
 ## 팀 역할 분담
