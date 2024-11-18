@@ -30,7 +30,9 @@ public class JoinController implements JoinControllerDocs {
 			.build();
 	}
 
-	@PostMapping("/{role}/join")
+	@PostMapping({ "/owner/join",
+					"/manager/join",
+					"/master/join"})
 	public Response<Void> joinProcess(
 		@Valid JoinRequestDto dto, @PathVariable String role) {
 		joinService.joinProcess(dto, role);

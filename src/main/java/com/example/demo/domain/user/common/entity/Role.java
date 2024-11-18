@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Role {
-
 	CUSTOMER("ROLE_CUSTOMER","소비자"),
 	OWNER("ROLE_OWNER","판매자"),
 	MANAGER("ROLE_MANAGER","관리자"),
