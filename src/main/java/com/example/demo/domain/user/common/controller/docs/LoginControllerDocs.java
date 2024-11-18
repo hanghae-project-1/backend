@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "로그인", description = "로그인 API")
+@Tag(name = "Login", description = "로그인 API")
 public interface LoginControllerDocs {
 
 	@Operation(summary = "로그인", description = "사용자 이름과 비밀번호로 로그인합니다.")

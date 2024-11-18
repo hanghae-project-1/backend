@@ -56,11 +56,13 @@ public class SecurityConfig {
 			.requestMatchers("/login", "/api/v1/*/join", "/api/v1/join",
 				"/api-docs/**", "/swagger-ui/**",
 				"/v3/api-docs/**",
-				"/swagger-resources/**")
+				"/swagger-resources/**"
+			)
 			.permitAll()
 			.requestMatchers("/api/v1/store/create")
 			.hasAnyRole(ADMIN_ROLES)
 			.requestMatchers("/api/v1/store/**",
+				"/api/v1/user/**",
 				"/api/v1/category/**",
 				"/api/v1/region/**",
 				"/api/v1/order/**",
@@ -71,20 +73,13 @@ public class SecurityConfig {
 		http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 		http.addFilterAt(
 			new LoginFilter(authenticationManager(authenticationConfiguration),
-				jwtUtil, objectMapper),
+				jwtUtil,objectMapper),
 			UsernamePasswordAuthenticationFilter.class);
 		http.sessionManagement((session) -> session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-		http.addFilterAt(
-				new LoginFilter(authenticationManager(authenticationConfiguration),
-						jwtUtil,objectMapper),
-				UsernamePasswordAuthenticationFilter.class);
-		http.sessionManagement((session) -> session
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		http.exceptionHandling(exceptionHandling -> exceptionHandling
-				.accessDeniedHandler(jwtAccessDeniedHandler)
-				.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+			.accessDeniedHandler(jwtAccessDeniedHandler)
+			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
 		);
 
 		return http.build();
