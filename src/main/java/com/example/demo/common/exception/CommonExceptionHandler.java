@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import com.example.demo.domain.ai.exception.AiException;
 import com.example.demo.domain.category.exception.CategoryMenuException;
+import com.example.demo.domain.menu.exception.MenuException;
+import com.example.demo.domain.region.exception.RegionException;
 import com.example.demo.domain.store.exception.StoreException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -109,6 +111,42 @@ public class CommonExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(StoreException.class)
 	public Response<Void> StoreExceptionHandler(StoreException e) {
+
+		Error error = e.getError();
+
+		return Response.<Void>builder()
+				.code(error.getCode())
+				.message(error.getMessage())
+				.build();
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MenuException.class)
+	public Response<Void> menuExceptionHandler(MenuException e) {
+
+		Error error = e.getError();
+
+		return Response.<Void>builder()
+				.code(error.getCode())
+				.message(error.getMessage())
+				.build();
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(CategoryMenuException.class)
+	public Response<Void> categoryMenuExceptionHandler(CategoryMenuException e) {
+
+		Error error = e.getError();
+
+		return Response.<Void>builder()
+				.code(error.getCode())
+				.message(error.getMessage())
+				.build();
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(RegionException.class)
+	public Response<Void> regionExceptionHandler(RegionException e) {
 
 		Error error = e.getError();
 
