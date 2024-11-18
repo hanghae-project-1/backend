@@ -4,17 +4,19 @@ import java.util.UUID;
 
 public record StoreResponseDto(
 
-        UUID id,
+		UUID id,
 
-        String name,
+		String name,
 
-        String phone,
+		String phone,
 
-        String address,
+		String address,
 
-        String categoryMenuName,
+		Double avgRating,
 
-        String district
+		String categoryMenuName,
+
+		String district
 
 ) {
 }

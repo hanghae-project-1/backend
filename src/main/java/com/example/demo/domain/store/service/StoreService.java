@@ -4,7 +4,6 @@ import com.example.demo.domain.category.entity.CategoryMenu;
 import com.example.demo.domain.category.exception.NotFoundCategoryMenuException;
 import com.example.demo.domain.category.repository.CategoryMenuRepository;
 import com.example.demo.domain.menu.dto.response.MenuResponseDto;
-import com.example.demo.domain.menu.entity.Menu;
 import com.example.demo.domain.menu.service.MenuService;
 import com.example.demo.domain.region.entity.Region;
 import com.example.demo.domain.region.exception.NotFoundRegionException;
@@ -28,87 +27,81 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StoreService {
 
-    private final MenuService menuService;
-    private final StoreMapper storeMapper;
-    private final StoreRepository storeRepository;
-    private final CategoryMenuRepository categoryMenuRepository;
-    private final RegionRepository regionRepository;
+	private final MenuService menuService;
+	private final StoreMapper storeMapper;
+	private final StoreRepository storeRepository;
+	private final CategoryMenuRepository categoryMenuRepository;
+	private final RegionRepository regionRepository;
 
-    @Transactional
-    public void createStore(StoreRequestDto requestDto) {
+	@Transactional
+	public void createStore(StoreRequestDto requestDto) {
 
-        checkDuplicateStoreName(requestDto.name(), requestDto.regionId());
-        Store store = storeMapper.toStoreEntity(requestDto);
-        storeRepository.save(store);
+		checkDuplicateStoreName(requestDto.name(), requestDto.regionId());
+		Store store = storeMapper.toStoreEntity(requestDto);
+		storeRepository.save(store);
 
 
-    }
+	}
 
-    @Transactional(readOnly = true)
-    public List<StoreResponseDto> ownerStore(String ownerName, String keyWord) {
+	@Transactional(readOnly = true)
+	public List<StoreResponseDto> ownerStore(String ownerName, String keyWord) {
 
-        List<Store> storeList = storeRepository.searchStoreByOwner(ownerName, keyWord);
+		return storeRepository.searchStoreByOwner(ownerName, keyWord);
+	}
 
-        return storeList.stream().map(storeMapper::toStoreResponseDto).toList();
+	@Transactional(readOnly = true)
+	public List<StoreResponseDto> searchStores(UUID categoryId, UUID regionId) {
 
-    }
+		return storeRepository.searchByFilters(categoryId, regionId);
+	}
 
-    @Transactional(readOnly = true)
-    public List<StoreResponseDto> searchStores(UUID categoryId, UUID regionId) {
+	@Transactional(readOnly = true)
+	public StoreDetailResponseDto getStoreDetail(UUID storeId) {
 
-        List<Store> storeList = storeRepository.searchByFilters(categoryId, regionId);
+		Store store = getStore(storeId);
+		List<MenuResponseDto> menuList = menuService.getAllMenu(storeId);
 
-        return storeList.stream().map(storeMapper::toStoreResponseDto).toList();
+		return storeMapper.toStoreDetailResponseDto(store, menuList);
 
-    }
+	}
 
-    @Transactional(readOnly = true)
-    public StoreDetailResponseDto getStoreDetail(UUID storeId) {
+	@Transactional
+	public void modifyStore(UUID storeId, StoreRequestDto requestDto) {
 
-        Store store = getStore(storeId);
-        List<MenuResponseDto> menuList = menuService.getAllMenu(storeId);
+		Store store = getStore(storeId);
 
-        return storeMapper.toStoreDetailResponseDto(store, menuList);
+		Region region = store.getRegion();
+		if (!region.getId().equals(requestDto.regionId())) {
+			region = regionRepository.findById(requestDto.regionId()).orElseThrow(NotFoundRegionException::new);
+		}
 
-    }
+		CategoryMenu categoryMenu = store.getCategoryMenu();
+		if (!categoryMenu.getId().equals(requestDto.categoryMenuId())) {
+			categoryMenu = categoryMenuRepository.findById(requestDto.categoryMenuId()).orElseThrow(NotFoundCategoryMenuException::new);
+		}
 
-    @Transactional
-    public void modifyStore(UUID storeId, StoreRequestDto requestDto) {
+		checkDuplicateStoreName(requestDto.name(), requestDto.regionId());
+		store.updateStore(requestDto, region, categoryMenu);
+		storeRepository.save(store);
+	}
 
-        Store store = getStore(storeId);
+	@Transactional
+	public void deleteStore(UUID storeId) {
 
-        Region region = store.getRegion();
-        if (!region.getId().equals(requestDto.regionId())) {
-            region = regionRepository.findById(requestDto.regionId()).orElseThrow(NotFoundRegionException::new);
-        }
+		Store store = getStore(storeId);
+		store.markAsDelete();
 
-        CategoryMenu categoryMenu = store.getCategoryMenu();
-        if (!categoryMenu.getId().equals(requestDto.categoryMenuId())) {
-            categoryMenu = categoryMenuRepository.findById(requestDto.categoryMenuId()).orElseThrow(NotFoundCategoryMenuException::new);
-        }
+	}
 
-        checkDuplicateStoreName(requestDto.name(), requestDto.regionId());
-        store.updateStore(requestDto, region, categoryMenu);
-        storeRepository.save(store);
-    }
+	private Store getStore(UUID storeId) {
+		return storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
+	}
 
-    @Transactional
-    public void deleteStore(UUID storeId) {
+	private void checkDuplicateStoreName(String name, UUID regionId) {
 
-        Store store = getStore(storeId);
-        store.markAsDelete();
-
-    }
-
-    private Store getStore(UUID storeId) {
-        return storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
-    }
-
-    private void checkDuplicateStoreName(String name, UUID regionId) {
-
-        boolean storeExists = storeRepository.existsByNameAndRegion_Id(name, regionId);
-        if (storeExists){
-            throw new DuplicateStoreNameException();
-        }
-    }
+		boolean storeExists = storeRepository.existsByNameAndRegion_Id(name, regionId);
+		if (storeExists) {
+			throw new DuplicateStoreNameException();
+		}
+	}
 }

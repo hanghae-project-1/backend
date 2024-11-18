@@ -12,6 +12,9 @@ import com.example.demo.domain.review.mapper.ReviewMapper;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
 import com.example.demo.domain.review.model.response.ReviewListResponseDTO;
 import com.example.demo.domain.review.repository.ReviewRepository;
+import com.example.demo.domain.store.entity.Store;
+import com.example.demo.domain.store.exception.NotFoundStoreException;
+import com.example.demo.domain.store.repository.StoreRepository;
 import com.example.demo.domain.user.common.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.OptionalDouble;
 import java.util.UUID;
 
 import static com.example.demo.domain.entity.common.Status.Order.ORDER_COMPLETED;
@@ -31,6 +36,7 @@ public class ReviewService {
 	private final UserService userService;
 	private final ReviewMapper reviewMapper;
 	private final OrderRepository orderRepository;
+	private final StoreRepository storeRepository;
 	private final ReviewRepository reviewRepository;
 
 	@Transactional
@@ -42,7 +48,11 @@ public class ReviewService {
 					validateOrderByUser(order.getCreatedBy(), userService.getCurrentUsername());
 					validateOrderStatus(order.getStatus());
 
-					reviewRepository.save(reviewMapper.toEntity(request));
+					Review review = reviewMapper.toEntity(request);
+
+					calculateForRating(order.getStore().getId(), review);
+
+					reviewRepository.save(review);
 				}, () -> {
 					throw new NotFoundOrderException();
 				}
@@ -106,5 +116,17 @@ public class ReviewService {
 		if (!createBy.equals(userId)) {
 			throw new IsNotYourOrderException();
 		}
+	}
+
+	private void calculateForRating(UUID storeId, Review review) {
+
+		Store store = storeRepository.findById(storeId).orElseThrow(NotFoundStoreException::new);
+		List<Review> reviews = storeRepository.searchStoreReviews(storeId);
+
+		reviews.add(review);
+
+		OptionalDouble average = reviews.stream().mapToDouble(Review::getRating).average();
+		average.ifPresent(store::updateAvgRating);
+
 	}
 }

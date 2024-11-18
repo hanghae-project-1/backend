@@ -39,6 +39,8 @@ public class Store extends BaseEntity {
 	@NotNull
 	String address;
 
+	Double avgRating;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "p_category_id")
 	CategoryMenu categoryMenu;
@@ -54,6 +56,10 @@ public class Store extends BaseEntity {
 		this.address = requestDto.address();
 		this.categoryMenu = categoryMenu;
 		this.region = region;
+	}
+
+	public void updateAvgRating(Double avgRating) {
+		this.avgRating = avgRating;
 	}
 
 }
