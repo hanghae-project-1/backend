@@ -1,14 +1,13 @@
 package com.example.demo.domain.user.common.controller;
 
 import com.example.demo.domain.user.common.dto.JoinRequestDto;
-import com.example.demo.domain.user.common.service.JoinService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,9 +24,6 @@ class JoinControllerTest {
 
 	@Autowired
 	private ObjectMapper objectMapper;
-
-	@MockBean
-	private JoinService joinService;
 	@Test
 	@DisplayName("고객-유효한 데이터로 회원가입 성공")
 	void JoinProcessWithValidData() throws Exception {
@@ -45,7 +41,7 @@ class JoinControllerTest {
 	void JoinProcessWithInvalidPassword() throws Exception {
 		JoinRequestDto dto = new JoinRequestDto("testuser", "pass");
 
-		mockMvc.perform(post("/api/v1/join") // URL 수정
+		mockMvc.perform(post("/api/v1/join")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 			.andExpect(status().isBadRequest());
@@ -56,7 +52,7 @@ class JoinControllerTest {
 	void JoinProcessWithInvalidUsernamePattern() throws Exception {
 		JoinRequestDto dto = new JoinRequestDto("Test123", "password123");
 
-		mockMvc.perform(post("/api/v1/join") // URL 수정
+		mockMvc.perform(post("/api/v1/join")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 			.andExpect(status().isBadRequest());
@@ -80,7 +76,7 @@ class JoinControllerTest {
 	void OwnerJoinProcessWithInvalidPassword() throws Exception {
 		JoinRequestDto dto = new JoinRequestDto("testuser", "pass");
 
-		mockMvc.perform(post("/api/v1/owner/join") // URL 수정
+		mockMvc.perform(post("/api/v1/owner/join")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 			.andExpect(status().isBadRequest());
@@ -91,7 +87,7 @@ class JoinControllerTest {
 	void OwnerJoinProcessWithInvalidUsernamePattern() throws Exception {
 		JoinRequestDto dto = new JoinRequestDto("Test123", "password123");
 
-		mockMvc.perform(post("/api/v1/owner/join") // URL 수정
+		mockMvc.perform(post("/api/v1/owner/join")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 			.andExpect(status().isBadRequest());
@@ -114,7 +110,7 @@ class JoinControllerTest {
 	void ManagerJoinProcessWithInvalidPassword() throws Exception {
 		JoinRequestDto dto = new JoinRequestDto("testuser", "pass");
 
-		mockMvc.perform(post("/api/v1/manager/join") // URL 수정
+		mockMvc.perform(post("/api/v1/manager/join")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 			.andExpect(status().isBadRequest());
@@ -125,10 +121,10 @@ class JoinControllerTest {
 	void ManagerJoinProcessWithInvalidUsernamePattern() throws Exception {
 		JoinRequestDto dto = new JoinRequestDto("Test123", "password123");
 
-		mockMvc.perform(post("/api/v1/manager/join") // URL 수정
+		mockMvc.perform(post("/api/v1/manager/join")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 			.andExpect(status().isBadRequest());
 	}
-	
+
 }
