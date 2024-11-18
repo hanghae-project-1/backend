@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.user.common.dto.CustomUserDetails;
 import com.example.demo.domain.user.common.entity.User;
+import com.example.demo.domain.user.common.exception.NotPoundUserException;
+import com.example.demo.domain.user.common.exception.UserWithdrawnException;
 import com.example.demo.domain.user.common.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,12 +22,16 @@ public class CustomUserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws
 		UsernameNotFoundException {
-		User userData = userRepository.findByUsername(username);
 
-		if (userData != null) {
-			return new CustomUserDetails(userData);
+		User user = userRepository.findByUsername(username);
+		if (!user.getIsPublic()) {
+			throw new UserWithdrawnException();
 		}
 
-		throw new UsernameNotFoundException("유저 네임이 없습니다.");
+		if (user != null) {
+			return new CustomUserDetails(user);
+		}
+
+		throw new NotPoundUserException();
 	}
 }
