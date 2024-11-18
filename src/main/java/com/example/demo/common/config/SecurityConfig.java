@@ -50,16 +50,17 @@ public class SecurityConfig {
 				.requestMatchers("/login", "/api/v1/*/join", "/api/v1/join",
 						"/api-docs/**", "/swagger-ui/**",
 						"/v3/api-docs/**",
-						"/swagger-resources/**"
+						"/swagger-resources/**",
+						"/api/v1/category/**",
+						"/api/v1/region/**",
+						"/api/v1/order/**"
 				)
 				.permitAll()
 				.requestMatchers("/api/v1/store/create")
 				.hasAnyRole(ADMIN_ROLES)
 				.requestMatchers(
-						"/api/v1/user/**",
-						"/api/v1/category/**",
-						"/api/v1/region/**",
-						"/api/v1/order/**")
+						"/api/v1/user/**"
+						)
 				.hasAnyRole(ALL_ROLES)
 				.anyRequest()
 				.permitAll());
