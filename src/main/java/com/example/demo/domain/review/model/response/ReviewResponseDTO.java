@@ -4,8 +4,6 @@ public record ReviewResponseDTO(
 
 		String content,
 
-		Integer rating,
-
-		String imageUrl
+		Integer rating
 ) {
 }

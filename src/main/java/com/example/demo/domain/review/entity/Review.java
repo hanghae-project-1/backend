@@ -28,8 +28,6 @@ public class Review extends BaseEntity {
 	@NotNull
 	Integer rating;
 
-	String imageUrl;
-
 	@OneToOne
 	@JoinColumn(name = "order_id")
 	Order order;

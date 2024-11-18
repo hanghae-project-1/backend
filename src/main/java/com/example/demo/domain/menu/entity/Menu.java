@@ -37,13 +37,11 @@ public class Menu extends BaseEntity {
 	@Builder.Default()
 	Boolean stockStatus = true;
 
-	String imageUrl;
-
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	Status.Classification classification;
 
-	@ManyToOne(fetch =FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "p_store")
 	Store store;
 
@@ -53,7 +51,6 @@ public class Menu extends BaseEntity {
 		this.content = requestDto.content();
 		this.price = requestDto.price();
 		this.stockStatus = requestDto.stockStatus();
-		this.imageUrl = requestDto.imageUrl();
 		this.store = store;
 	}
 }

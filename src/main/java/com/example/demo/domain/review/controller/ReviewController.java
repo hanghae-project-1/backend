@@ -8,8 +8,6 @@ import com.example.demo.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -38,7 +36,6 @@ public class ReviewController implements ReviewControllerDocs {
 
 	@GetMapping("/user/{userId}")
 	public Response<ReviewListResponseDTO> getUserReviewList(@PathVariable String userId,
-	                                                         @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
 	                                                         Pageable pageable) {
 		return Response.<ReviewListResponseDTO>builder()
 				.data(reviewService.getUserReviewList(userId, pageable))
@@ -47,7 +44,6 @@ public class ReviewController implements ReviewControllerDocs {
 
 	@GetMapping("/store/{storeId}")
 	public Response<ReviewListResponseDTO> getStoreReviewList(@PathVariable UUID storeId,
-	                                                          @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
 	                                                          Pageable pageable) {
 		return Response.<ReviewListResponseDTO>builder()
 				.data(reviewService.getStoreReviewList(storeId, pageable))
