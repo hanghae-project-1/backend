@@ -26,7 +26,7 @@ public interface LoginControllerDocs {
 			content = @Content(schema = @Schema(implementation = Response.class)))
 	})
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	ResponseEntity<?> login(
+	Response<Void> login(
 		@Parameter(description = "사용자 이름", required = true)
 		@RequestParam("username") String username,
 
