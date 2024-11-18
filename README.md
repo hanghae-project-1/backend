@@ -1,4 +1,4 @@
-7조 손흥민
+![image](https://github.com/user-attachments/assets/c09b6330-51cb-4802-99f3-dc724bca1f89)7조 손흥민
 =============
 
 ## 팀 역할 분담
@@ -70,7 +70,7 @@
 </br>
 
 ## 실행방법 
-- 배포 화면 URL:
+- 배포 화면 URL: 18.234.161.55
 
 
 </br>
@@ -336,4 +336,4 @@
 </details>
 
 ## API 문서 
-- [URL]()
+- [URL](18.234.161.55/swagger-ui/index.html)
