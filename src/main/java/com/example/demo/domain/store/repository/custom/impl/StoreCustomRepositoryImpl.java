@@ -1,6 +1,5 @@
 package com.example.demo.domain.store.repository.custom.impl;
 
-import com.example.demo.domain.store.entity.QStore;
 import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.store.repository.custom.StoreCustomRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -41,6 +40,20 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository {
                 .where(builder)
                 .fetch();
 
+    }
+
+    public List<Store> searchStoreByOwner(String ownerName, String keyWord){
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (keyWord != null){
+            builder.and(store.name.containsIgnoreCase(keyWord));
+        }
+
+        return queryFactory
+                .selectFrom(store)
+                .where(store.ownerName.eq(ownerName).and(builder))
+                .fetch();
     }
 
 }

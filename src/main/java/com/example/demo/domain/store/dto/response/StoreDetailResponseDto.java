@@ -1,8 +1,11 @@
 package com.example.demo.domain.store.dto.response;
 
+import com.example.demo.domain.menu.dto.response.MenuResponseDto;
+
+import java.util.List;
 import java.util.UUID;
 
-public record StoreResponseDto(
+public record StoreDetailResponseDto (
 
         UUID id,
 
@@ -14,7 +17,9 @@ public record StoreResponseDto(
 
         String categoryMenuName,
 
-        String district
+        String district,
 
-) {
+        List<MenuResponseDto> menuList
+
+){
 }

@@ -3,10 +3,14 @@ package com.example.demo.domain.store.service;
 import com.example.demo.domain.category.entity.CategoryMenu;
 import com.example.demo.domain.category.exception.NotFoundCategoryMenuException;
 import com.example.demo.domain.category.repository.CategoryMenuRepository;
+import com.example.demo.domain.menu.dto.response.MenuResponseDto;
+import com.example.demo.domain.menu.entity.Menu;
+import com.example.demo.domain.menu.service.MenuService;
 import com.example.demo.domain.region.entity.Region;
 import com.example.demo.domain.region.exception.NotFoundRegionException;
 import com.example.demo.domain.region.repository.RegionRepository;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import com.example.demo.domain.store.dto.response.StoreDetailResponseDto;
 import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.store.exception.DuplicateStoreNameException;
@@ -24,6 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StoreService {
 
+    private final MenuService menuService;
     private final StoreMapper storeMapper;
     private final StoreRepository storeRepository;
     private final CategoryMenuRepository categoryMenuRepository;
@@ -39,7 +44,16 @@ public class StoreService {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<StoreResponseDto> ownerStore(String ownerName, String keyWord) {
 
+        List<Store> storeList = storeRepository.searchStoreByOwner(ownerName, keyWord);
+
+        return storeList.stream().map(storeMapper::toStoreResponseDto).toList();
+
+    }
+
+    @Transactional(readOnly = true)
     public List<StoreResponseDto> searchStores(UUID categoryId, UUID regionId) {
 
         List<Store> storeList = storeRepository.searchByFilters(categoryId, regionId);
@@ -48,9 +62,19 @@ public class StoreService {
 
     }
 
+    @Transactional(readOnly = true)
+    public StoreDetailResponseDto getStoreDetail(UUID storeId) {
+
+        Store store = getStore(storeId);
+        List<MenuResponseDto> menuList = menuService.getAllMenu(storeId);
+
+        return storeMapper.toStoreDetailResponseDto(store, menuList);
+
+    }
+
     @Transactional
     public void modifyStore(UUID storeId, StoreRequestDto requestDto) {
-        
+
         Store store = getStore(storeId);
 
         Region region = store.getRegion();

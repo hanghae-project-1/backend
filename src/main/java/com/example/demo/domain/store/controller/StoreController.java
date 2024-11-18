@@ -3,6 +3,7 @@ package com.example.demo.domain.store.controller;
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.store.controller.docs.StoreControllerDocs;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import com.example.demo.domain.store.dto.response.StoreDetailResponseDto;
 import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import com.example.demo.domain.store.service.StoreService;
 import jakarta.validation.Valid;
@@ -32,6 +33,16 @@ public class StoreController implements StoreControllerDocs{
 
     }
 
+    @GetMapping
+    public Response<List<StoreResponseDto>> ownerStores(
+            @RequestParam String ownerName,
+            @RequestParam(required = false) String keyWord
+    ){
+        return Response.<List<StoreResponseDto>>builder()
+                .data(storeService.ownerStore(ownerName, keyWord))
+                .build();
+    }
+
     @GetMapping("/search")
     public Response<List<StoreResponseDto>> searchStores(
             @RequestParam(required = false) UUID categoryId,
@@ -39,6 +50,13 @@ public class StoreController implements StoreControllerDocs{
     ){
         return Response.<List<StoreResponseDto>>builder()
                 .data(storeService.searchStores(categoryId, regionId))
+                .build();
+    }
+
+    @GetMapping("/{storeId}")
+    public Response<StoreDetailResponseDto> getStoreDetail(@PathVariable UUID storeId){
+        return Response.<StoreDetailResponseDto>builder()
+                .data(storeService.getStoreDetail(storeId))
                 .build();
     }
 
