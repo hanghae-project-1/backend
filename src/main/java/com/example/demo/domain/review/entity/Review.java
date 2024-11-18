@@ -28,7 +28,6 @@ public class Review extends BaseEntity {
 	@NotNull
 	Integer rating;
 
-	@NotNull
 	String imageUrl;
 
 	@OneToOne
