@@ -33,6 +33,7 @@ public enum Error {
 	OWNER_MISMATCH(1003, "로그인한 OWNER 와 작성자 OWNER가 일치하지 않습니다."),
 	UNAUTHORIZED(1004, "로그인이 필요합니다."),
 	PERMISSION_DENIED(1005, "권한이 없습니다."),
+	USER_WITH_DRAWN(1006, "탈퇴한 회원입니다."),
 
 	DUPLICATE_MENU_NAME(2001, "동일한 메뉴가 있습니다."),
 	NOT_FOUND_MENU(2002, "해당 메뉴를 찾을 수 없습니다."),

@@ -1,6 +1,5 @@
 package com.example.demo.domain.user.common.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.user.common.dto.UserInfoRequestDto;
@@ -8,28 +7,28 @@ import com.example.demo.domain.user.common.entity.User;
 import com.example.demo.domain.user.common.exception.NotPoundUserException;
 import com.example.demo.domain.user.common.repository.UserRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PasswordChangeService {
+public class UserWithdrawnService {
 
 	private final UserRepository userRepository;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final UserService userService;
 
-	public void changePassword(UserInfoRequestDto dto) {
+	public void soft(UserInfoRequestDto dto){
 		String currentUsername = userService.getCurrentUsername();
 		String changeUsername = dto.getUsername();
 
 		if(!currentUsername.equals(changeUsername)){
 			throw new NotPoundUserException();
 		}
-		String encodedPassword = bCryptPasswordEncoder.encode(dto.getPassword());
+
 		User user = userRepository.findByUsername(changeUsername);
-		user.changePassword(encodedPassword);
+		user.markAsDelete(currentUsername);
 		userRepository.save(user);
 	}
 

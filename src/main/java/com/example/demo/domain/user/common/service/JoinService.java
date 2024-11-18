@@ -9,12 +9,12 @@ import com.example.demo.domain.user.common.exception.NotPoundUriException;
 import com.example.demo.domain.user.common.mapper.UserMapper;
 import com.example.demo.domain.user.common.repository.UserRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Transactional
 public class JoinService {
 
 	private final UserRepository userRepository;
