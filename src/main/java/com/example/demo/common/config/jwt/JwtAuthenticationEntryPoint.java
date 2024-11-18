@@ -1,4 +1,4 @@
-package com.example.demo.common.config;
+package com.example.demo.common.config.jwt;
 
 import com.example.demo.common.exception.Error;
 import com.example.demo.common.model.response.Response;

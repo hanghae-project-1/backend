@@ -36,7 +36,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
 		if (jwtUtil.isExpired(token)) {
 			filterChain.doFilter(request, response);
-
 			return;
 		}
 		setupUserAuthentication(getUser(token));
