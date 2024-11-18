@@ -1,6 +1,5 @@
 package com.example.demo.domain.review.service;
 
-import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.order.entity.Order;
 import com.example.demo.domain.order.exception.IsNotYourOrderException;
 import com.example.demo.domain.order.repository.OrderRepository;
@@ -12,6 +11,7 @@ import com.example.demo.domain.review.mapper.ReviewMapper;
 import com.example.demo.domain.review.model.request.BaseReviewRequestDTO;
 import com.example.demo.domain.review.model.request.ReviewRequestDTO;
 import com.example.demo.domain.review.repository.ReviewRepository;
+import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.user.common.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,10 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -325,16 +322,17 @@ class ReviewServiceTest {
 			// Given
 			String userId = String.valueOf(UUID.randomUUID());
 
-			Pageable pageable = PageRequest.of(0, 10);
+			Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createdAt")));
 			Page<Review> emptyPage = new PageImpl<>(createMockReviewList(userId), pageable, 2);
 
-			when(reviewRepository.findAllByCreatedBy(userId, pageable)).thenReturn(emptyPage);
+			when(reviewRepository.findAllByCreatedAt(userId, pageable)).thenReturn(emptyPage);
+			when(userService.getCurrentUserRole()).thenReturn("ROLE_MANAGER");
 
 			// When
 			reviewService.getUserReviewList(userId, pageable);
 
 			// Then
-			verify(reviewRepository, times(1)).findAllByCreatedBy(userId, pageable);
+			verify(reviewRepository, times(1)).findAllByCreatedAt(userId, pageable);
 		}
 
 		@Test

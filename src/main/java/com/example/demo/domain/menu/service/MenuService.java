@@ -11,11 +11,13 @@ import com.example.demo.domain.menu.repository.MenuRepository;
 import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.store.exception.NotFoundStoreException;
 import com.example.demo.domain.store.repository.StoreRepository;
+import com.example.demo.domain.user.common.exception.UserException;
 import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +42,22 @@ public class MenuService {
 
 	@Transactional(readOnly = true)
 	public List<MenuResponseDto> getAllMenu(UUID storeId) {
-		List<Menu> menuList = menuRepository.findByStoreId(storeId);
+
+		List<Menu> menuList = new ArrayList<>();
+
+		try {
+			String currentUserRole = userService.getCurrentUserRole();
+
+			if (currentUserRole.equals("ROLE_MANAGER") || currentUserRole.equals("ROLE_MASTER")) {
+				menuList = menuRepository.findByStoreId(storeId);
+			}
+		} catch (UserException ignored) {
+
+		} finally {
+			if (menuList.isEmpty()) {
+				menuList = menuRepository.findByStoreIdAndIsDeleteFalseAndIsPublicTrue(storeId);
+			}
+		}
 
 		return menuList.stream().map(menuMapper::toMenuResponseDto).toList();
 

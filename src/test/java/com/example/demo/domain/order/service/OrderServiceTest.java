@@ -1,9 +1,7 @@
-/*
 package com.example.demo.domain.order.service;
 
-import com.example.demo.domain.menu.entity.Menu;
-import com.example.demo.domain.store.entity.Store;
 import com.example.demo.domain.entity.common.Status;
+import com.example.demo.domain.menu.entity.Menu;
 import com.example.demo.domain.order.entity.Order;
 import com.example.demo.domain.order.entity.OrderDetail;
 import com.example.demo.domain.order.exception.IncorrectTotalPriceException;
@@ -17,6 +15,8 @@ import com.example.demo.domain.order.model.response.OrderDetailResponseDTO;
 import com.example.demo.domain.order.model.response.OrderResponseDTO;
 import com.example.demo.domain.order.model.response.StoreOrderResponseDTO;
 import com.example.demo.domain.order.repository.OrderRepository;
+import com.example.demo.domain.store.entity.Store;
+import com.example.demo.domain.store.exception.IsNotYourStoreException;
 import com.example.demo.domain.store.repository.StoreRepository;
 import com.example.demo.domain.user.common.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -377,6 +377,7 @@ class OrderServiceTest {
 			Order mockStoreOrder = createMockStoreOrder(storeId, orderId, userId);
 
 			when(userService.getCurrentUsername()).thenReturn(userId);
+			when(userService.getCurrentUserRole()).thenReturn("ROLE_OWNER");
 			when(storeRepository.findById(storeId)).thenReturn(Optional.of(mockStoreOrder.getStore()));
 			when(orderRepository.findAllByStoreIdAndCreatedAtBetween(storeId, startDate, endDate)).thenReturn(List.of(mockStoreOrder));
 			when(orderMapper.toStoreOrderResponseDTO(List.of(mockStoreOrder))).thenReturn(new StoreOrderResponseDTO(
@@ -413,11 +414,13 @@ class OrderServiceTest {
 
 			Order mockStoreOrder = createMockStoreOrder(storeId, orderId, userId);
 
+			when(userService.getCurrentUsername()).thenReturn(String.valueOf(UUID.randomUUID()));
+			when(userService.getCurrentUserRole()).thenReturn("ROLE_OWNER");
 			when(storeRepository.findById(storeId)).thenReturn(Optional.of(mockStoreOrder.getStore()));
 
 			// When & Then
 			assertThrows(
-					IllegalArgumentException.class,
+					IsNotYourStoreException.class,
 					() -> orderService.getAllOrdersByStore(storeId, startDate, endDate)
 			);
 
@@ -425,4 +428,3 @@ class OrderServiceTest {
 	}
 
 }
-*/

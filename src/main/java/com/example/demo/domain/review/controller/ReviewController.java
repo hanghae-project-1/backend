@@ -8,6 +8,7 @@ import com.example.demo.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class ReviewController implements ReviewControllerDocs {
 	private final ReviewService reviewService;
 
 	@PostMapping
+	@PreAuthorize("hasRole('ROLE_CUSTOMER')")
 	public Response<Void> createReview(@Valid @RequestBody ReviewRequestDTO request) {
 
 		reviewService.createReview(request);
@@ -28,6 +30,7 @@ public class ReviewController implements ReviewControllerDocs {
 	}
 
 	@PatchMapping("/{reviewId}")
+	@PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER', 'ROLE_MASTER')")
 	public Response<Void> modifyReviewStatus(@PathVariable UUID reviewId) {
 		reviewService.modifyReviewStatus(reviewId);
 		return Response.<Void>builder()

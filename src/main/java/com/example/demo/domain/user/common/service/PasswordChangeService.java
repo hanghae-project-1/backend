@@ -1,15 +1,13 @@
 package com.example.demo.domain.user.common.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.example.demo.domain.user.common.dto.UserInfoRequestDto;
 import com.example.demo.domain.user.common.entity.User;
-import com.example.demo.domain.user.common.exception.NotPoundUserException;
+import com.example.demo.domain.user.common.exception.NotFoundUserException;
 import com.example.demo.domain.user.common.repository.UserRepository;
-
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -24,8 +22,8 @@ public class PasswordChangeService {
 		String currentUsername = userService.getCurrentUsername();
 		String changeUsername = dto.getUsername();
 
-		if(!currentUsername.equals(changeUsername)){
-			throw new NotPoundUserException();
+		if (!currentUsername.equals(changeUsername)) {
+			throw new NotFoundUserException();
 		}
 		String encodedPassword = bCryptPasswordEncoder.encode(dto.getPassword());
 		User user = userRepository.findByUsername(changeUsername);

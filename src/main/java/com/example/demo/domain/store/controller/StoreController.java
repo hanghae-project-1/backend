@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class StoreController implements StoreControllerDocs {
 	private final StoreService storeService;
 
 	@PostMapping("/create")
+	@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
 	public Response<Void> createStore(@Valid @RequestBody StoreRequestDto requestDto) {
 
 		storeService.createStore(requestDto);
@@ -36,6 +38,7 @@ public class StoreController implements StoreControllerDocs {
 	}
 
 	@GetMapping
+	@PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
 	public Response<List<StoreResponseDto>> ownerStores(
 			@RequestParam String ownerName,
 			@RequestParam(required = false) String keyWord
@@ -64,6 +67,7 @@ public class StoreController implements StoreControllerDocs {
 	}
 
 	@PatchMapping("/{storeId}")
+	@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
 	public Response<Void> modifyStore(@PathVariable UUID storeId, @RequestBody StoreRequestDto requestDto) {
 
 		storeService.modifyStore(storeId, requestDto);
@@ -73,6 +77,7 @@ public class StoreController implements StoreControllerDocs {
 	}
 
 	@DeleteMapping("/{storeId}")
+	@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
 	public Response<Void> deleteStore(@PathVariable UUID storeId) {
 
 		storeService.deleteStore(storeId);

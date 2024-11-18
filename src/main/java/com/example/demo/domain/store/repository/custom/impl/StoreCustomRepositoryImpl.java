@@ -20,13 +20,12 @@ import static com.example.demo.domain.order.entity.QOrder.order;
 import static com.example.demo.domain.review.entity.QReview.review;
 import static com.example.demo.domain.store.entity.QStore.store;
 
-//@Repository
 @RequiredArgsConstructor
 public class StoreCustomRepositoryImpl implements StoreCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
 
-	public List<StoreResponseDto> searchByFilters(UUID categoryId, UUID regionId, Pageable pageable) {
+	public List<StoreResponseDto> searchByFilters(UUID categoryId, UUID regionId, Boolean isManager, Pageable pageable) {
 
 		BooleanBuilder builder = new BooleanBuilder();
 		List<OrderSpecifier<?>> orders = PagingUtils.getAllOrderSpecifiers(pageable);
@@ -35,6 +34,10 @@ public class StoreCustomRepositoryImpl implements StoreCustomRepository {
 			pageable = PageRequest.of(pageable.getPageNumber(), 10);
 		}
 
+		if (!isManager) {
+			builder.and(store.isPublic.eq(true));
+			builder.and(store.isDelete.eq(false));
+		}
 		if (categoryId != null && regionId == null) {
 			builder.and(store.categoryMenu.id.eq(categoryId));
 		}

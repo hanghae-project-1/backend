@@ -17,6 +17,7 @@ import com.example.demo.domain.store.exception.DuplicateStoreNameException;
 import com.example.demo.domain.store.exception.NotFoundStoreException;
 import com.example.demo.domain.store.mapper.StoreMapper;
 import com.example.demo.domain.store.repository.StoreRepository;
+import com.example.demo.domain.user.common.exception.UserException;
 import com.example.demo.domain.user.common.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -56,8 +57,19 @@ public class StoreService {
 	@Transactional(readOnly = true)
 	public StoreListResponseDto searchStores(UUID categoryId, UUID regionId, Pageable pageable) {
 
-		List<StoreResponseDto> storeResponseList = storeRepository.searchByFilters(categoryId, regionId, pageable);
-		
+		boolean isManager = false;
+
+		try {
+			String currentUserRole = userService.getCurrentUserRole();
+
+			if (currentUserRole.equals("ROLE_MANAGER") || currentUserRole.equals("ROLE_MASTER")) {
+				isManager = true;
+			}
+		} catch (UserException ignored) {
+
+		}
+		List<StoreResponseDto> storeResponseList = storeRepository.searchByFilters(categoryId, regionId, isManager, pageable);
+
 		return new StoreListResponseDto(
 				storeResponseList.size(),
 				storeResponseList
