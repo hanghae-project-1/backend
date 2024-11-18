@@ -3,6 +3,7 @@ package com.example.demo.domain.store.controller;
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.store.controller.docs.StoreControllerDocs;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import com.example.demo.domain.store.dto.response.StoreDetailResponseDto;
 import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import com.example.demo.domain.store.service.StoreService;
 import jakarta.validation.Valid;
@@ -49,6 +50,13 @@ public class StoreController implements StoreControllerDocs{
     ){
         return Response.<List<StoreResponseDto>>builder()
                 .data(storeService.searchStores(categoryId, regionId))
+                .build();
+    }
+
+    @GetMapping("/{storeId}")
+    public Response<StoreDetailResponseDto> getStoreDetail(@PathVariable UUID storeId){
+        return Response.<StoreDetailResponseDto>builder()
+                .data(storeService.getStoreDetail(storeId))
                 .build();
     }
 

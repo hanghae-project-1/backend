@@ -2,6 +2,7 @@ package com.example.demo.domain.store.controller.docs;
 
 import com.example.demo.common.model.response.Response;
 import com.example.demo.domain.store.dto.request.StoreRequestDto;
+import com.example.demo.domain.store.dto.response.StoreDetailResponseDto;
 import com.example.demo.domain.store.dto.response.StoreResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,6 +49,15 @@ public interface StoreControllerDocs {
             @RequestParam(required = false) UUID categoryId,
             @RequestParam(required = false) UUID regionId
     );
+
+    @Operation(summary = "음식점 단건 조회", description = "음식점 ID를 통해 단건 조회 하는 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "음식점 조회 성공", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "음식점 조회 실패.", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "음식점을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping("/{storeId}")
+    Response<StoreDetailResponseDto> getStoreDetail(@PathVariable UUID storeId);
 
     @Operation(summary = "음식점 수정", description = "음식점 ID 를 통해 음식점을 수정하는 API 입니다.")
     @ApiResponses(value = {
