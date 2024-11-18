@@ -5,6 +5,6 @@ import com.example.demo.common.exception.Error;
 
 public class NotPoundUserException extends UserException {
 	public NotPoundUserException() {
-		super(Error.NOT_FOUND_URI, HttpStatus.NOT_FOUND);
+		super(Error.NOT_FOUND_USER, HttpStatus.NOT_FOUND);
 	}
 }
